@@ -31,3 +31,25 @@ Open `index.html` in a browser — no build step or server needed.
   in the form `word,meaning[,example]`. Duplicate words are skipped on import.
 - Words and IPA quiz accuracy are saved in the browser's `localStorage`; a sample deck loads on first run.
 - Responsive layout and automatic dark mode.
+
+## Tests
+
+```bash
+cd vocab-flashcards
+npm install
+npx playwright install chromium   # first time only
+npm test                          # unit + browser tests
+```
+
+- `npm run test:unit` — Node's built-in test runner (`tests/unit/`). Checks the
+  IPA deck: 44 sounds in the right groups, 3 unique words each, every
+  transcription marks its own focus sound, only IPA characters (ɡ not g), and
+  every confusable swap gives a distinct wrong answer.
+- `npm run test:e2e` — Playwright in Chromium (`tests/e2e/`), one spec per tab:
+  study (flip, navigation, known/learning filters, shuffle, persistence),
+  manage words (add, edit, delete, search, duplicate check, import CSV/TSV/JSON,
+  export, reset, HTML escaping) and IPA practice (chart, flashcards, both quiz
+  types, scopes, per-sound accuracy, audio, phone layout). Any page error fails
+  the test.
+
+The tests also run in GitHub Actions on changes to `vocab-flashcards/`.
