@@ -15,6 +15,7 @@
   --hl-text: #422006;
   --ok-bg: #dcfce7;
   --bad-bg: #fee2e2;
+  --overlay: rgba(20, 24, 40, 0.45);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -35,6 +36,7 @@
     --hl-text: #fef9c3;
     --ok-bg: #14301f;
     --bad-bg: #3a1a1a;
+    --overlay: rgba(0, 0, 0, 0.6);
   }
 }
 
@@ -245,6 +247,13 @@ mark.focus { background: var(--hl-bg); color: var(--hl-text); border-radius: 4px
 .feedback.bad strong { color: var(--danger); }
 .feedback .speak { margin-left: 6px; }
 .quiz-next { display: flex; justify-content: flex-end; }
+
+/* ---------- Confirm box ---------- */
+.confirm-overlay { position: fixed; inset: 0; z-index: 10; display: flex; align-items: center; justify-content: center; padding: 16px; background: var(--overlay); }
+.confirm-overlay[hidden] { display: none; }
+.confirm-box { width: min(420px, 100%); display: grid; gap: 16px; padding: 20px; background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow); }
+.confirm-box p { margin: 0; }
+.confirm-actions { display: flex; justify-content: flex-end; gap: 8px; }
 
 @media (max-width: 560px) {
   .options { grid-template-columns: 1fr; }

@@ -31,6 +31,9 @@ Open `index.html` in a browser — no build step or server needed.
   in the form `word,meaning[,example]`. Duplicate words are skipped on import.
 - Words and IPA quiz accuracy are saved in the browser's `localStorage`; a sample deck loads on first run.
 - Responsive layout and automatic dark mode.
+- Delete, Reset, Reset accuracy and adding a duplicate word ask in an in-page
+  confirm box (Enter or OK confirms; Escape, Cancel or a click outside cancels)
+  instead of the browser's `confirm()` pop-up, which some embedded viewers block.
 
 ## Tests
 
@@ -49,7 +52,7 @@ npm test                          # unit + browser tests
   study (flip, navigation, known/learning filters, shuffle, persistence),
   manage words (add, edit, delete, search, duplicate check, import CSV/TSV/JSON,
   export, reset, HTML escaping) and IPA practice (chart, flashcards, both quiz
-  types, scopes, per-sound accuracy, audio, phone layout). Any page error fails
-  the test.
+  types, scopes, per-sound accuracy, audio, phone layout) and the confirm box.
+  Any page error, console error or native browser dialog fails the test.
 
 The tests also run in GitHub Actions on changes to `vocab-flashcards/`.

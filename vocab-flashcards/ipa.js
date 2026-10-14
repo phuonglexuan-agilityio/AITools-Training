@@ -338,8 +338,8 @@
   el.qSpeak.disabled = !canSpeak;
   el.qSpeak.addEventListener('click', () => quiz.q && speak(quiz.q.item.word));
   el.qNext.addEventListener('click', nextQuestion);
-  el.resetStats.addEventListener('click', () => {
-    if (!confirm('Clear your quiz accuracy for every sound?')) return;
+  el.resetStats.addEventListener('click', async () => {
+    if (!(await window.askConfirm('Clear your quiz accuracy for every sound?', 'Clear'))) return;
     stats = {};
     saveStats();
     quiz = { ...quiz, right: 0, total: 0, streak: 0 };

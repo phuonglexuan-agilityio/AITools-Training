@@ -13,7 +13,6 @@ async function addWord(page, word, meaning, extra = {}) {
 
 test.describe('Manage words tab', () => {
   test.beforeEach(async ({ app }) => {
-    app.on('dialog', (d) => d.accept());
     await app.click('[data-view=manage]');
   });
 
@@ -40,11 +39,18 @@ test.describe('Manage words tab', () => {
     await expect(app.locator('.word-item')).toHaveCount(6);
   });
 
-  test('asks before adding a duplicate and respects "cancel"', async ({ app }) => {
-    app.removeAllListeners('dialog');
-    app.once('dialog', (d) => d.dismiss());
+  test('asks before adding a duplicate and respects "Cancel"', async ({ app }) => {
     await addWord(app, 'Ephemeral', 'again');
+    await expect(app.locator('#confirm-msg')).toHaveText('"Ephemeral" already exists. Add anyway?');
+    await app.click('#confirm-cancel');
+    await expect(app.locator('#confirm-overlay')).toBeHidden();
     await expect(app.locator('.word-item')).toHaveCount(6);
+  });
+
+  test('adds a duplicate after "Add anyway"', async ({ app }) => {
+    await addWord(app, 'Ephemeral', 'again');
+    await app.getByRole('button', { name: 'Add anyway' }).click();
+    await expect(app.locator('.word-item')).toHaveCount(7);
   });
 
   test('edits a word', async ({ app }) => {
@@ -67,8 +73,11 @@ test.describe('Manage words tab', () => {
     await expect(app.locator('#cancel-edit')).toBeHidden();
   });
 
-  test('deletes a word', async ({ app }) => {
+  test('deletes a word after confirming', async ({ app }) => {
     await item(app, 'mitigate').getByRole('button', { name: 'Delete' }).click();
+    await expect(app.locator('#confirm-msg')).toHaveText('Delete "mitigate"?');
+    await expect(app.locator('#confirm-ok')).toHaveText('Delete');
+    await app.click('#confirm-ok');
     await expect(app.locator('.word-item')).toHaveCount(5);
     await expect(item(app, 'mitigate')).toHaveCount(0);
   });
@@ -131,10 +140,18 @@ test.describe('Manage words tab', () => {
     expect(Object.keys(exported[0]).sort()).toEqual(['example', 'id', 'known', 'meaning', 'sub', 'word']);
   });
 
+  test('keeps the word when the delete is cancelled', async ({ app }) => {
+    await item(app, 'mitigate').getByRole('button', { name: 'Delete' }).click();
+    await app.click('#confirm-cancel');
+    await expect(app.locator('.word-item')).toHaveCount(6);
+  });
+
   test('reset restores the sample deck', async ({ app }) => {
     await item(app, 'mitigate').getByRole('button', { name: 'Delete' }).click();
+    await app.click('#confirm-ok');
     await addWord(app, 'resilient', 'Able to recover quickly');
     await app.click('#reset');
+    await app.click('#confirm-ok');
     await expect(app.locator('.word-item')).toHaveCount(6);
     await expect(item(app, 'mitigate')).toHaveCount(1);
     await expect(item(app, 'resilient')).toHaveCount(0);

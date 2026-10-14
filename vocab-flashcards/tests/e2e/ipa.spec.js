@@ -26,7 +26,6 @@ async function openQuiz(page, { scope = 'all', type = 'word-ipa' } = {}) {
 
 test.describe('IPA practice tab', () => {
   test.beforeEach(async ({ app }) => {
-    app.on('dialog', (d) => d.accept());
     // Record speech instead of playing it.
     await app.evaluate(() => {
       window.__spoken = [];
@@ -227,6 +226,7 @@ test.describe('IPA practice tab', () => {
 
       await app.click('[data-ipa-mode=quiz]');
       await app.click('#ipa-reset-stats');
+      await app.click('#confirm-ok');
       await app.click('[data-ipa-mode=chart]');
       await expect(app.locator('.ipa-tile', { hasText: '/ʒ/' }).locator('.acc')).toHaveText('–');
     });

@@ -234,9 +234,9 @@
     el.cancelEdit.hidden = true;
   }
 
-  function removeWord(id) {
+  async function removeWord(id) {
     const w = words.find((x) => x.id === id);
-    if (!w || !confirm(`Delete "${w.word}"?`)) return;
+    if (!w || !(await window.askConfirm(`Delete "${w.word}"?`, 'Delete'))) return;
     words = words.filter((x) => x.id !== id);
     save();
     buildOrder();
@@ -244,7 +244,7 @@
     toast('Word deleted');
   }
 
-  function onSubmit(e) {
+  async function onSubmit(e) {
     e.preventDefault();
     const data = normalize({
       word: el.fWord.value, sub: el.fSub.value,
@@ -259,7 +259,7 @@
       toast('Word updated');
     } else {
       const dup = words.some((w) => w.word.toLowerCase() === data.word.toLowerCase());
-      if (dup && !confirm(`"${data.word}" already exists. Add anyway?`)) return;
+      if (dup && !(await window.askConfirm(`"${data.word}" already exists. Add anyway?`, 'Add anyway'))) return;
       words.push(data);
       toast('Word added');
     }
@@ -351,8 +351,8 @@
   el.importInput.addEventListener('change', () => {
     if (el.importInput.files[0]) importWords(el.importInput.files[0]);
   });
-  el.reset.addEventListener('click', () => {
-    if (!confirm('Replace all words with the sample deck? This cannot be undone.')) return;
+  el.reset.addEventListener('click', async () => {
+    if (!(await window.askConfirm('Replace all words with the sample deck? This cannot be undone.', 'Reset'))) return;
     words = SAMPLE_WORDS.map(normalize);
     save();
     shuffled = false;
