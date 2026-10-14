@@ -11,6 +11,10 @@
   --danger: #b91c1c;
   --card-back: #eef2ff;
   --shadow: 0 8px 24px rgba(20, 24, 40, 0.08);
+  --hl-bg: #fde68a;
+  --hl-text: #422006;
+  --ok-bg: #dcfce7;
+  --bad-bg: #fee2e2;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -27,6 +31,10 @@
     --danger: #f87171;
     --card-back: #232845;
     --shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    --hl-bg: #854d0e;
+    --hl-text: #fef9c3;
+    --ok-bg: #14301f;
+    --bad-bg: #3a1a1a;
   }
 }
 
@@ -184,7 +192,62 @@ input[type="checkbox"] { padding: 0; }
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+/* ---------- IPA practice ---------- */
+.ipa {
+  font-family: "Charis SIL", "Doulos SIL", "Gentium Plus", "Noto Sans", "Lucida Sans Unicode", "Segoe UI", system-ui, sans-serif;
+}
+mark.focus { background: var(--hl-bg); color: var(--hl-text); border-radius: 4px; padding: 0 2px; }
+.muted { color: var(--muted); }
+.note { font-size: 0.8rem; color: var(--muted); text-align: center; margin-top: 24px; }
+
+.segmented { display: flex; gap: 4px; background: var(--surface); padding: 4px; border-radius: 10px; border: 1px solid var(--border); }
+.segmented button { border: 0; background: transparent; color: var(--muted); padding: 6px 12px; border-radius: 8px; cursor: pointer; font: inherit; }
+.segmented button.active { background: var(--primary); color: var(--primary-text); }
+
+.ipa-detail { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+.ipa-detail p { margin: 0; }
+.detail-head { display: flex; align-items: center; gap: 14px; }
+.detail-sym { font-size: 2.2rem; font-weight: 600; }
+.ipa-detail .tip { margin: 10px 0; }
+.detail-words { list-style: none; padding: 0; margin: 0 0 12px; display: grid; gap: 6px; }
+.detail-words li { display: flex; align-items: center; gap: 12px; }
+.detail-words .w { min-width: 80px; font-weight: 600; }
+.detail-words .ipa { font-size: 1.1rem; }
+.detail-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.ipa-group h3 { font-size: 0.95rem; color: var(--muted); margin: 16px 0 8px; }
+.ipa-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 8px; }
+.ipa-tile { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 10px 6px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; cursor: pointer; font: inherit; color: var(--text); }
+.ipa-tile:hover, .ipa-tile.selected { border-color: var(--primary); }
+.ipa-tile.selected { box-shadow: 0 0 0 2px var(--primary) inset; }
+.ipa-tile .sym { font-size: 1.35rem; font-weight: 600; }
+.ipa-tile .ex { font-size: 0.8rem; color: var(--muted); }
+.ipa-tile .acc { font-size: 0.75rem; color: var(--muted); }
+.acc.high { color: var(--ok); }
+.acc.mid { color: var(--warn); }
+.acc.low { color: var(--danger); }
+
+.controls.three { grid-template-columns: repeat(3, 1fr); }
+
+.score { font-weight: 600; color: var(--text); }
+.quiz-prompt { text-align: center; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px 16px; box-shadow: var(--shadow); }
+.quiz-prompt p { margin: 0 0 8px; }
+.options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0 8px; }
+.opt { display: flex; align-items: center; gap: 10px; font: inherit; font-size: 1.15rem; text-align: left; padding: 12px 14px; background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 10px; cursor: pointer; }
+.opt.ipa { font-family: "Charis SIL", "Doulos SIL", "Gentium Plus", "Noto Sans", "Lucida Sans Unicode", "Segoe UI", system-ui, sans-serif; }
+.opt:hover:not(:disabled) { border-color: var(--primary); }
+.opt:disabled { cursor: default; }
+.opt kbd { font-family: system-ui, sans-serif; font-size: 0.75rem; color: var(--muted); border: 1px solid var(--border); border-radius: 4px; padding: 0 6px; }
+.opt.correct { border-color: var(--ok); background: var(--ok-bg); }
+.opt.wrong { border-color: var(--danger); background: var(--bad-bg); }
+.feedback { min-height: 1.5em; margin: 8px 0; }
+.feedback.good strong { color: var(--ok); }
+.feedback.bad strong { color: var(--danger); }
+.feedback .speak { margin-left: 6px; }
+.quiz-next { display: flex; justify-content: flex-end; }
+
 @media (max-width: 560px) {
+  .options { grid-template-columns: 1fr; }
   .grid { grid-template-columns: 1fr; }
   .controls { grid-template-columns: 1fr 1fr; }
   .card { height: 260px; }

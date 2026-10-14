@@ -11,6 +11,7 @@
     <h1>Vocab Flashcards</h1>
     <nav class="tabs" role="tablist">
       <button class="tab active" data-view="study" role="tab">Study</button>
+      <button class="tab" data-view="ipa" role="tab">IPA practice</button>
       <button class="tab" data-view="manage" role="tab">Manage words</button>
     </nav>
   </header>
@@ -68,6 +69,78 @@
       <p class="shortcuts">Shortcuts: Space flip · ← → navigate · 1 still learning · 2 known</p>
     </section>
 
+    <!-- IPA practice view (Phase 1) -->
+    <section id="view-ipa" class="view">
+      <div class="toolbar">
+        <div class="segmented" role="group" aria-label="IPA practice mode">
+          <button type="button" data-ipa-mode="chart" class="active">Sound chart</button>
+          <button type="button" data-ipa-mode="cards">Flashcards</button>
+          <button type="button" data-ipa-mode="quiz">Quiz</button>
+        </div>
+        <label>Practise <select id="ipa-scope"></select></label>
+      </div>
+
+      <div id="ipa-chart" class="ipa-pane">
+        <div id="ipa-detail" class="ipa-detail"></div>
+        <div id="ipa-groups"></div>
+      </div>
+
+      <div id="ipa-cards" class="ipa-pane" hidden>
+        <div class="toolbar">
+          <span id="ipa-card-pos">0 / 0</span>
+          <label class="check"><input type="checkbox" id="ipa-reverse"> IPA first</label>
+          <button id="ipa-shuffle" class="btn ghost">Shuffle</button>
+        </div>
+        <div class="card-wrap">
+          <button id="ipa-card" class="card" aria-label="Flip card">
+            <div class="card-inner">
+              <div class="face front">
+                <span class="face-label" id="ipa-front-label">Word</span>
+                <p id="ipa-front-text" class="main-text"></p>
+                <span class="hint">Say it aloud, then click or press Space to flip</span>
+              </div>
+              <div class="face back">
+                <span class="face-label" id="ipa-back-label">IPA</span>
+                <p id="ipa-back-text" class="main-text"></p>
+                <p id="ipa-back-sound" class="sub-text"></p>
+                <p id="ipa-back-tip" class="example"></p>
+              </div>
+            </div>
+          </button>
+        </div>
+        <div class="controls three">
+          <button id="ipa-prev" class="btn ghost">← Prev</button>
+          <button id="ipa-card-speak" class="btn">🔊 Hear word</button>
+          <button id="ipa-next" class="btn ghost">Next →</button>
+        </div>
+        <p class="shortcuts">Shortcuts: Space flip · ← → navigate · S hear the word</p>
+      </div>
+
+      <div id="ipa-quiz" class="ipa-pane" hidden>
+        <div class="toolbar">
+          <label>Question
+            <select id="ipa-quiz-type">
+              <option value="word-ipa">Word → IPA</option>
+              <option value="ipa-word">IPA → word</option>
+            </select>
+          </label>
+          <span id="ipa-score" class="score"></span>
+          <button id="ipa-reset-stats" class="btn ghost small danger">Reset accuracy</button>
+        </div>
+        <div class="quiz-prompt">
+          <p id="ipa-q-label" class="muted"></p>
+          <p id="ipa-q-text" class="main-text"></p>
+          <button id="ipa-q-speak" class="btn small ghost">🔊 Hear word</button>
+        </div>
+        <div id="ipa-options" class="options"></div>
+        <p id="ipa-feedback" class="feedback" aria-live="polite"></p>
+        <div class="quiz-next"><button id="ipa-q-next" class="btn primary" disabled>Next question →</button></div>
+        <p class="shortcuts">Shortcuts: 1–4 answer · Enter next question</p>
+      </div>
+
+      <p class="note">Transcriptions use British English (RP). Audio uses your browser's built-in speech voice.</p>
+    </section>
+
     <!-- Manage view -->
     <section id="view-manage" class="view">
       <form id="word-form" class="word-form">
@@ -101,5 +174,7 @@
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script src="app.js"></script>
+  <script src="ipa-data.js"></script>
+  <script src="ipa.js"></script>
 </body>
 </html>
