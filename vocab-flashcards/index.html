@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vocab Flashcards</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <h1>Vocab Flashcards</h1>
+    <nav class="tabs" role="tablist">
+      <button class="tab active" data-view="study" role="tab">Study</button>
+      <button class="tab" data-view="manage" role="tab">Manage words</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Study view -->
+    <section id="view-study" class="view active">
+      <div class="toolbar">
+        <label>Show
+          <select id="filter">
+            <option value="all">All words</option>
+            <option value="learning">Still learning</option>
+            <option value="known">Known</option>
+          </select>
+        </label>
+        <label class="check"><input type="checkbox" id="reverse"> Meaning first</label>
+        <button id="shuffle" class="btn ghost">Shuffle</button>
+      </div>
+
+      <div class="progress">
+        <span id="position">0 / 0</span>
+        <div class="bar"><div id="bar-fill"></div></div>
+        <span id="known-count">0 known</span>
+      </div>
+
+      <div id="empty-study" class="empty" hidden>
+        No cards here. Add words in <strong>Manage words</strong> or change the filter.
+      </div>
+
+      <div id="card-wrap" class="card-wrap">
+        <button id="card" class="card" aria-label="Flip card">
+          <div class="card-inner">
+            <div class="face front">
+              <span class="face-label" id="front-label">Word</span>
+              <p id="front-text" class="main-text"></p>
+              <p id="front-sub" class="sub-text"></p>
+              <span class="hint">Click or press Space to flip</span>
+            </div>
+            <div class="face back">
+              <span class="face-label" id="back-label">Meaning</span>
+              <p id="back-text" class="main-text"></p>
+              <p id="back-sub" class="sub-text"></p>
+              <p id="back-example" class="example"></p>
+            </div>
+          </div>
+        </button>
+      </div>
+
+      <div class="controls">
+        <button id="prev" class="btn ghost" title="Previous (←)">← Prev</button>
+        <button id="mark-learning" class="btn warn" title="Still learning (1)">Still learning</button>
+        <button id="mark-known" class="btn ok" title="I know it (2)">I know it</button>
+        <button id="next" class="btn ghost" title="Next (→)">Next →</button>
+      </div>
+      <p class="shortcuts">Shortcuts: Space flip · ← → navigate · 1 still learning · 2 known</p>
+    </section>
+
+    <!-- Manage view -->
+    <section id="view-manage" class="view">
+      <form id="word-form" class="word-form">
+        <h2 id="form-title">Add a word</h2>
+        <input type="hidden" id="edit-id">
+        <div class="grid">
+          <label>Word *<input id="f-word" required maxlength="100"></label>
+          <label>Pronunciation / type<input id="f-sub" maxlength="100" placeholder="e.g. /ɪˈfem.ər.əl/ (adj)"></label>
+          <label class="full">Meaning *<input id="f-meaning" required maxlength="300"></label>
+          <label class="full">Example sentence<textarea id="f-example" rows="2" maxlength="500"></textarea></label>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn primary" id="save-btn">Add word</button>
+          <button type="button" class="btn ghost" id="cancel-edit" hidden>Cancel</button>
+        </div>
+      </form>
+
+      <div class="list-header">
+        <input id="search" type="search" placeholder="Search words…">
+        <div class="io">
+          <button id="export" class="btn ghost">Export</button>
+          <label class="btn ghost file-btn">Import<input type="file" id="import" accept=".json,.csv,.txt"></label>
+          <button id="reset" class="btn ghost danger">Reset</button>
+        </div>
+      </div>
+
+      <ul id="word-list" class="word-list"></ul>
+      <p id="empty-list" class="empty" hidden>No words yet.</p>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
