@@ -6,8 +6,8 @@
   const SOUNDS = window.IPA_SOUNDS;
 
   // One practice item per example word.
-  const ITEMS = SOUNDS.flatMap((sound) => sound.words.map(([word, marked]) => ({
-    word, marked, ipa: marked.replace(/[[\]]/g, ''), sound,
+  const ITEMS = SOUNDS.flatMap((sound) => sound.words.map(([word, marked, vi]) => ({
+    word, marked, vi, ipa: marked.replace(/[[\]]/g, ''), sound,
   })));
   const bySymbol = new Map(SOUNDS.map((s) => [s.symbol, s]));
   const groupLabel = (id) => GROUPS.find((g) => g.id === id).label;
@@ -21,7 +21,7 @@
     detail: $('ipa-detail'), groups: $('ipa-groups'),
     cardPos: $('ipa-card-pos'), card: $('ipa-card'), reverse: $('ipa-reverse'), shuffle: $('ipa-shuffle'),
     frontLabel: $('ipa-front-label'), frontText: $('ipa-front-text'),
-    backLabel: $('ipa-back-label'), backText: $('ipa-back-text'), backSound: $('ipa-back-sound'), backTip: $('ipa-back-tip'),
+    backLabel: $('ipa-back-label'), backText: $('ipa-back-text'), backVi: $('ipa-back-vi'), backSound: $('ipa-back-sound'), backTip: $('ipa-back-tip'),
     cardPrev: $('ipa-prev'), cardNext: $('ipa-next'), cardSpeak: $('ipa-card-speak'),
     quizType: $('ipa-quiz-type'), score: $('ipa-score'), resetStats: $('ipa-reset-stats'),
     qLabel: $('ipa-q-label'), qText: $('ipa-q-text'), qSpeak: $('ipa-q-speak'),
@@ -66,6 +66,12 @@
       return span;
     }
     span.append(`/${m[1]}`, make('mark', 'focus', m[2] || '·'), `${m[3]}/`);
+    return span;
+  }
+
+  function viNode(vi) {
+    const span = make('span', 'vi', `(${vi})`);
+    span.lang = 'vi';
     return span;
   }
 
@@ -186,9 +192,11 @@
     head.append(meta);
 
     const list = make('ul', 'detail-words');
-    s.words.forEach(([word, marked]) => {
+    s.words.forEach(([word, marked, vi]) => {
       const li = make('li');
-      li.append(make('span', 'w', word), ipaNode(marked), speakBtn(word));
+      const meaning = make('span', 'vi', vi);
+      meaning.lang = 'vi';
+      li.append(make('span', 'w', word), ipaNode(marked), speakBtn(word), meaning);
       list.append(li);
     });
 
@@ -220,6 +228,7 @@
     el.backLabel.textContent = reverse ? 'Word' : 'IPA';
     el.frontText.replaceChildren(reverse ? ipaNode(item.marked, false) : item.word);
     el.backText.replaceChildren(reverse ? item.word : ipaNode(item.marked));
+    el.backVi.textContent = reverse ? item.vi : `${item.word}: ${item.vi}`;
     el.backSound.replaceChildren('Focus sound ', make('span', 'ipa', `/${item.sound.symbol}/`), ` — ${item.sound.name}`);
     el.backTip.textContent = item.sound.tip;
     el.frontText.classList.toggle('ipa', reverse);
@@ -309,7 +318,7 @@
     el.feedback.className = `feedback ${chosen.correct ? 'good' : 'bad'}`;
     el.feedback.replaceChildren(
       make('strong', '', chosen.correct ? 'Correct! ' : 'Not quite. '),
-      `${item.word} = `, ipaNode(item.marked),
+      `${item.word} `, viNode(item.vi), ' = ', ipaNode(item.marked),
       ` — focus sound `, make('span', 'ipa', `/${item.sound.symbol}/`), ` (${item.sound.name}). ${item.sound.tip} `,
       speakBtn(item.word, '🔊 Hear it'),
     );

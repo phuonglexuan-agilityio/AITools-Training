@@ -27,7 +27,13 @@
             <option value="known">Known</option>
           </select>
         </label>
-        <label class="check"><input type="checkbox" id="reverse"> Meaning first</label>
+        <label>Front
+          <select id="front-mode">
+            <option value="word">Word</option>
+            <option value="meaning">English meaning</option>
+            <option value="vi">Vietnamese meaning</option>
+          </select>
+        </label>
         <button id="shuffle" class="btn ghost">Shuffle</button>
       </div>
 
@@ -54,6 +60,7 @@
               <span class="face-label" id="back-label">Meaning</span>
               <p id="back-text" class="main-text"></p>
               <p id="back-sub" class="sub-text"></p>
+              <p id="back-extra" class="vi-text"></p>
               <p id="back-example" class="example"></p>
             </div>
           </div>
@@ -102,6 +109,7 @@
               <div class="face back">
                 <span class="face-label" id="ipa-back-label">IPA</span>
                 <p id="ipa-back-text" class="main-text"></p>
+                <p id="ipa-back-vi" class="vi-text" lang="vi"></p>
                 <p id="ipa-back-sound" class="sub-text"></p>
                 <p id="ipa-back-tip" class="example"></p>
               </div>
@@ -149,7 +157,8 @@
         <div class="grid">
           <label>Word *<input id="f-word" required maxlength="100"></label>
           <label>Pronunciation / type<input id="f-sub" maxlength="100" placeholder="e.g. /ɪˈfem.ər.əl/ (adj)"></label>
-          <label class="full">Meaning *<input id="f-meaning" required maxlength="300"></label>
+          <label>Meaning (English) *<input id="f-meaning" required maxlength="300"></label>
+          <label>Vietnamese meaning<input id="f-vi" lang="vi" maxlength="300" placeholder="e.g. phù du, chóng tàn"></label>
           <label class="full">Example sentence<textarea id="f-example" rows="2" maxlength="500"></textarea></label>
         </div>
         <div class="form-actions">
@@ -159,7 +168,7 @@
       </form>
 
       <div class="list-header">
-        <input id="search" type="search" placeholder="Search words…">
+        <input id="search" type="search" placeholder="Search English or Vietnamese…">
         <div class="io">
           <button id="export" class="btn ghost">Export</button>
           <label class="btn ghost file-btn">Import<input type="file" id="import" accept=".json,.csv,.txt"></label>

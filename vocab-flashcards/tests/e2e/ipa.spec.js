@@ -4,8 +4,8 @@ const { test, expect } = require('./fixtures');
 function currentQuestion(page) {
   return page.evaluate(() => {
     const text = document.getElementById('ipa-q-text').textContent;
-    const items = window.IPA_SOUNDS.flatMap((s) => s.words.map(([word, marked]) => ({
-      word, marked, ipa: marked.replace(/[[\]]/g, ''), symbol: s.symbol, group: s.group, alt: s.alt,
+    const items = window.IPA_SOUNDS.flatMap((s) => s.words.map(([word, marked, vi]) => ({
+      word, marked, vi, ipa: marked.replace(/[[\]]/g, ''), symbol: s.symbol, group: s.group, alt: s.alt,
     })));
     const options = [...document.querySelectorAll('#ipa-options .opt')].map((o) => o.lastChild.textContent);
     return { text, options, item: items.find((i) => i.word === text || `/${i.ipa}/` === text) };
@@ -51,6 +51,7 @@ test.describe('IPA practice tab', () => {
       await expect(detail.locator('.detail-words .w')).toHaveText(['think', 'three', 'both']);
       await expect(detail.locator('mark.focus')).toHaveText(['θ', 'θ', 'θ']);
       await expect(detail.locator('.detail-words .ipa').first()).toHaveText('/θɪŋk/');
+      await expect(detail.locator('.detail-words .vi')).toHaveText(['nghĩ', 'số ba', 'cả hai']);
       await expect(app.locator('.ipa-tile.selected')).toHaveText(/θ/);
     });
 
@@ -76,6 +77,7 @@ test.describe('IPA practice tab', () => {
       await expect(app.locator('#ipa-back-text')).toHaveText('/sɪt/');
       await expect(app.locator('#ipa-back-text mark.focus')).toHaveText('ɪ');
       await expect(app.locator('#ipa-back-sound')).toContainText('short i');
+      await expect(app.locator('#ipa-back-vi')).toHaveText('sit: ngồi');
     });
 
     test('navigates and wraps', async ({ app }) => {
@@ -96,6 +98,7 @@ test.describe('IPA practice tab', () => {
       await expect(app.locator('#ipa-front-text')).toHaveText('/sɪt/');
       await expect(app.locator('#ipa-front-text mark')).toHaveCount(0);
       await expect(app.locator('#ipa-back-text')).toHaveText('sit');
+      await expect(app.locator('#ipa-back-vi')).toHaveText('ngồi');
     });
 
     test('a group scope contains every word in that group', async ({ app }) => {
@@ -144,6 +147,7 @@ test.describe('IPA practice tab', () => {
 
       await expect(app.locator('#ipa-feedback')).toContainText('Correct!');
       await expect(app.locator('#ipa-feedback mark.focus')).toHaveText(q.item.symbol);
+      await expect(app.locator('#ipa-feedback .vi')).toHaveText(`(${q.item.vi})`);
       await expect(app.locator('.opt.correct')).toHaveCount(1);
       await expect(app.locator('.opt.wrong')).toHaveCount(0);
       await expect(app.locator('#ipa-score')).toHaveText('Score 1 / 1 · Streak 1');

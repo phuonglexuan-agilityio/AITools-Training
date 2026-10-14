@@ -7,6 +7,7 @@ async function addWord(page, word, meaning, extra = {}) {
   await page.fill('#f-word', word);
   await page.fill('#f-meaning', meaning);
   if (extra.sub) await page.fill('#f-sub', extra.sub);
+  if (extra.vi) await page.fill('#f-vi', extra.vi);
   if (extra.example) await page.fill('#f-example', extra.example);
   await page.click('#save-btn');
 }
@@ -20,6 +21,7 @@ test.describe('Manage words tab', () => {
     await expect(app.locator('.word-item')).toHaveCount(6);
     await expect(item(app, 'ephemeral')).toContainText('Lasting for a very short time');
     await expect(item(app, 'ephemeral').locator('.badge')).toHaveText('learning');
+    await expect(item(app, 'ephemeral').locator('.v')).toHaveText('phù du, chóng tàn');
   });
 
   test('adds a word that then appears in Study', async ({ app }) => {
@@ -31,6 +33,33 @@ test.describe('Manage words tab', () => {
 
     await app.click('[data-view=study]');
     await expect(app.locator('#position')).toHaveText('1 / 7');
+  });
+
+  test('adds a word with a Vietnamese meaning', async ({ app }) => {
+    await addWord(app, 'resilient', 'Able to recover quickly', { vi: 'kiên cường' });
+    await expect(item(app, 'resilient').locator('.v')).toHaveText('kiên cường');
+    await app.click('[data-view=study]');
+    await app.click('#prev');
+    await expect(app.locator('#back-extra')).toHaveText('Tiếng Việt: kiên cường');
+  });
+
+  test('edits the Vietnamese meaning', async ({ app }) => {
+    await item(app, 'concise').getByRole('button', { name: 'Edit' }).click();
+    await expect(app.locator('#f-vi')).toHaveValue('ngắn gọn, súc tích');
+    await app.fill('#f-vi', 'ngắn gọn');
+    await app.click('#save-btn');
+    await expect(item(app, 'concise').locator('.v')).toHaveText('ngắn gọn');
+  });
+
+  test('searches Vietnamese with or without accent marks', async ({ app }) => {
+    await app.fill('#search', 'súc tích');
+    await expect(app.locator('.word-item .w')).toHaveText(['concise']);
+    await app.fill('#search', 'suc tich');
+    await expect(app.locator('.word-item .w')).toHaveText(['concise']);
+    await app.fill('#search', 'KHAP NOI');
+    await expect(app.locator('.word-item .w')).toHaveText(['ubiquitous']);
+    await app.fill('#search', 'diu bot');
+    await expect(app.locator('.word-item .w')).toHaveText(['mitigate']);
   });
 
   test('requires a word and a meaning', async ({ app }) => {
@@ -109,6 +138,18 @@ test.describe('Manage words tab', () => {
     await expect(app.locator('.word-item')).toHaveCount(7);
   });
 
+  test('imports CSV with a header row, matching columns by name', async ({ app }) => {
+    await app.setInputFiles('#import', {
+      name: 'words.csv',
+      mimeType: 'text/csv',
+      buffer: Buffer.from('Word,Vietnamese,Meaning,Example\nresilient,kiên cường,Able to recover quickly,Kids are resilient\n'),
+    });
+    await expect(app.locator('#toast')).toHaveText('Imported 1 word(s)');
+    await expect(item(app, 'resilient')).toContainText('Able to recover quickly');
+    await expect(item(app, 'resilient').locator('.v')).toHaveText('kiên cường');
+    await expect(item(app, 'resilient').locator('.e')).toHaveText('Kids are resilient');
+  });
+
   test('imports tab-separated lines', async ({ app }) => {
     await app.setInputFiles('#import', {
       name: 'words.txt',
@@ -119,10 +160,11 @@ test.describe('Manage words tab', () => {
   });
 
   test('imports JSON', async ({ app }) => {
-    const data = [{ word: 'candid', meaning: 'Truthful', known: true }, { word: 'no meaning' }];
+    const data = [{ word: 'candid', meaning: 'Truthful', vi: 'thẳng thắn', known: true }, { word: 'no meaning' }];
     await app.setInputFiles('#import', { name: 'w.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(data)) });
     await expect(app.locator('#toast')).toHaveText('Imported 1 word(s)');
     await expect(item(app, 'candid').locator('.badge')).toHaveText('known');
+    await expect(item(app, 'candid').locator('.v')).toHaveText('thẳng thắn');
   });
 
   test('reports a file it cannot read', async ({ app }) => {
@@ -137,7 +179,8 @@ test.describe('Manage words tab', () => {
     const exported = JSON.parse(fs.readFileSync(await download.path(), 'utf8'));
     expect(exported.map((w) => w.word)).toContain('ephemeral');
     expect(exported).toHaveLength(6);
-    expect(Object.keys(exported[0]).sort()).toEqual(['example', 'id', 'known', 'meaning', 'sub', 'word']);
+    expect(Object.keys(exported[0]).sort()).toEqual(['example', 'id', 'known', 'meaning', 'sub', 'vi', 'word']);
+    expect(exported.find((w) => w.word === 'ephemeral').vi).toBe('phù du, chóng tàn');
   });
 
   test('keeps the word when the delete is cancelled', async ({ app }) => {

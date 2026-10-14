@@ -62,11 +62,53 @@ test.describe('Study tab', () => {
     await expect(app.locator('#mark-known')).toBeDisabled();
   });
 
-  test('"Meaning first" swaps the faces', async ({ app }) => {
-    await app.check('#reverse');
+  test('word front: the back shows the English and Vietnamese meanings', async ({ app }) => {
+    await expect(app.locator('#back-text')).toHaveText('Lasting for a very short time');
+    await expect(app.locator('#back-extra')).toHaveText('Tiếng Việt: phù du, chóng tàn');
+    await expect(app.locator('#back-extra')).toHaveAttribute('lang', 'vi');
+  });
+
+  test('"English meaning" front swaps the faces', async ({ app }) => {
+    await app.selectOption('#front-mode', 'meaning');
     await expect(app.locator('#front-label')).toHaveText('Meaning');
     await expect(app.locator('#front-text')).toHaveText('Lasting for a very short time');
     await expect(app.locator('#back-text')).toHaveText('ephemeral');
+    await expect(app.locator('#back-sub')).toHaveText('/ɪˈfem.ər.əl/ (adj)');
+    await expect(app.locator('#back-extra')).toHaveText('Tiếng Việt: phù du, chóng tàn');
+  });
+
+  test('"Vietnamese meaning" front: guess the English word', async ({ app }) => {
+    await app.selectOption('#front-mode', 'vi');
+    await expect(app.locator('#front-label')).toHaveText('Tiếng Việt');
+    await expect(app.locator('#front-text')).toHaveText('phù du, chóng tàn');
+    await expect(app.locator('#front-text')).toHaveAttribute('lang', 'vi');
+    await expect(app.locator('#back-text')).toHaveText('ephemeral');
+    await expect(app.locator('#back-extra')).toHaveText('Meaning: Lasting for a very short time');
+  });
+
+  test('a word without Vietnamese shows its English meaning on a Vietnamese front', async ({ app }) => {
+    await app.click('[data-view=manage]');
+    await app.fill('#f-word', 'resilient');
+    await app.fill('#f-meaning', 'Able to recover quickly');
+    await app.click('#save-btn');
+    await app.click('[data-view=study]');
+    await app.selectOption('#front-mode', 'vi');
+    await app.click('#prev');
+    await expect(app.locator('#front-text')).toHaveText('Able to recover quickly');
+    await expect(app.locator('#front-label')).toHaveText('Meaning');
+    await expect(app.locator('#back-extra')).toHaveText('');
+  });
+
+  test('a deck saved before Vietnamese was added gets it for the sample words', async ({ app }) => {
+    await app.evaluate(() => localStorage.setItem('vocab-flashcards.v1', JSON.stringify([
+      { id: 'a', word: 'ephemeral', meaning: 'Lasting for a very short time', known: true },
+      { id: 'b', word: 'mine', meaning: 'My own word' },
+    ])));
+    await app.reload();
+    await expect(app.locator('#back-extra')).toHaveText('Tiếng Việt: phù du, chóng tàn');
+    await expect(app.locator('#known-count')).toHaveText('1 / 2 known');
+    await app.click('#next');
+    await expect(app.locator('#back-extra')).toHaveText('');
   });
 
   test('shuffle keeps every card in the deck', async ({ app }) => {

@@ -145,6 +145,7 @@ input[type="checkbox"] { padding: 0; }
 .face-label { position: absolute; top: 14px; left: 18px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
 .main-text { font-size: 2rem; font-weight: 600; margin: 0; overflow-wrap: anywhere; }
 .sub-text { color: var(--muted); margin: 6px 0 0; }
+.vi-text { margin: 10px 0 0; font-size: 1.05rem; }
 .example { font-style: italic; margin: 16px 0 0; max-width: 560px; }
 .hint { position: absolute; bottom: 14px; font-size: 0.8rem; color: var(--muted); }
 .card.known .face.front { border-color: var(--ok); }
@@ -173,6 +174,7 @@ input[type="checkbox"] { padding: 0; }
 .word-item .w { font-weight: 600; }
 .word-item .s { color: var(--muted); font-size: 0.85rem; margin-left: 6px; }
 .word-item .m { margin: 2px 0 0; }
+.word-item .v { margin: 2px 0 0; color: var(--primary); }
 .word-item .e { margin: 2px 0 0; font-style: italic; color: var(--muted); font-size: 0.9rem; }
 .word-item .actions { display: flex; gap: 6px; flex-shrink: 0; }
 .badge { font-size: 0.7rem; padding: 2px 8px; border-radius: 999px; border: 1px solid currentColor; margin-left: 6px; }
@@ -215,6 +217,8 @@ mark.focus { background: var(--hl-bg); color: var(--hl-text); border-radius: 4px
 .detail-words li { display: flex; align-items: center; gap: 12px; }
 .detail-words .w { min-width: 80px; font-weight: 600; }
 .detail-words .ipa { font-size: 1.1rem; }
+.detail-words .vi { color: var(--muted); min-width: 0; }
+.detail-words li { flex-wrap: wrap; }
 .detail-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 
 .ipa-group h3 { font-size: 0.95rem; color: var(--muted); margin: 16px 0 8px; }

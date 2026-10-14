@@ -4,12 +4,12 @@
   const STORAGE_KEY = 'vocab-flashcards.v1';
 
   const SAMPLE_WORDS = [
-    { word: 'ephemeral', sub: '/ɪˈfem.ər.əl/ (adj)', meaning: 'Lasting for a very short time', example: 'Fame in the age of social media is often ephemeral.' },
-    { word: 'meticulous', sub: '/məˈtɪk.jə.ləs/ (adj)', meaning: 'Showing great attention to detail; very careful and precise', example: 'She kept meticulous records of every test case.' },
-    { word: 'ubiquitous', sub: '/juːˈbɪk.wə.təs/ (adj)', meaning: 'Present, appearing, or found everywhere', example: 'Smartphones have become ubiquitous.' },
-    { word: 'mitigate', sub: '/ˈmɪt.ɪ.ɡeɪt/ (v)', meaning: 'To make something less severe or harmful', example: 'Automated tests help mitigate the risk of regressions.' },
-    { word: 'concise', sub: '/kənˈsaɪs/ (adj)', meaning: 'Giving a lot of information clearly in few words', example: 'Write concise acceptance criteria.' },
-    { word: 'ambiguous', sub: '/æmˈbɪɡ.ju.əs/ (adj)', meaning: 'Open to more than one interpretation', example: 'The requirement was ambiguous, so we asked the client.' },
+    { word: 'ephemeral', vi: 'phù du, chóng tàn', sub: '/ɪˈfem.ər.əl/ (adj)', meaning: 'Lasting for a very short time', example: 'Fame in the age of social media is often ephemeral.' },
+    { word: 'meticulous', vi: 'tỉ mỉ, kỹ lưỡng', sub: '/məˈtɪk.jə.ləs/ (adj)', meaning: 'Showing great attention to detail; very careful and precise', example: 'She kept meticulous records of every test case.' },
+    { word: 'ubiquitous', vi: 'có mặt ở khắp nơi', sub: '/juːˈbɪk.wə.təs/ (adj)', meaning: 'Present, appearing, or found everywhere', example: 'Smartphones have become ubiquitous.' },
+    { word: 'mitigate', vi: 'giảm nhẹ, làm dịu bớt', sub: '/ˈmɪt.ɪ.ɡeɪt/ (v)', meaning: 'To make something less severe or harmful', example: 'Automated tests help mitigate the risk of regressions.' },
+    { word: 'concise', vi: 'ngắn gọn, súc tích', sub: '/kənˈsaɪs/ (adj)', meaning: 'Giving a lot of information clearly in few words', example: 'Write concise acceptance criteria.' },
+    { word: 'ambiguous', vi: 'mơ hồ, có thể hiểu nhiều cách', sub: '/æmˈbɪɡ.ju.əs/ (adj)', meaning: 'Open to more than one interpretation', example: 'The requirement was ambiguous, so we asked the client.' },
   ];
 
   // ---------- State ----------
@@ -21,14 +21,14 @@
   const $ = (id) => document.getElementById(id);
   const el = {
     tabs: document.querySelectorAll('.tab'),
-    filter: $('filter'), reverse: $('reverse'), shuffle: $('shuffle'),
+    filter: $('filter'), frontMode: $('front-mode'), shuffle: $('shuffle'),
     position: $('position'), barFill: $('bar-fill'), knownCount: $('known-count'),
     emptyStudy: $('empty-study'), cardWrap: $('card-wrap'), card: $('card'),
     frontLabel: $('front-label'), frontText: $('front-text'), frontSub: $('front-sub'),
-    backLabel: $('back-label'), backText: $('back-text'), backSub: $('back-sub'), backExample: $('back-example'),
+    backLabel: $('back-label'), backText: $('back-text'), backSub: $('back-sub'), backExtra: $('back-extra'), backExample: $('back-example'),
     prev: $('prev'), next: $('next'), markKnown: $('mark-known'), markLearning: $('mark-learning'),
     form: $('word-form'), formTitle: $('form-title'), editId: $('edit-id'),
-    fWord: $('f-word'), fSub: $('f-sub'), fMeaning: $('f-meaning'), fExample: $('f-example'),
+    fWord: $('f-word'), fSub: $('f-sub'), fMeaning: $('f-meaning'), fVi: $('f-vi'), fExample: $('f-example'),
     saveBtn: $('save-btn'), cancelEdit: $('cancel-edit'),
     search: $('search'), list: $('word-list'), emptyList: $('empty-list'),
     exportBtn: $('export'), importInput: $('import'), reset: $('reset'),
@@ -47,6 +47,7 @@
       sub: String(w.sub || '').trim(),
       meaning: String(w.meaning || '').trim(),
       example: String(w.example || '').trim(),
+      vi: String(w.vi || '').trim(),
       known: Boolean(w.known),
     };
   }
@@ -56,7 +57,11 @@
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) return parsed.map(normalize);
+        // Decks saved before Vietnamese was added get it for the sample words.
+        const sampleVi = new Map(SAMPLE_WORDS.map((s) => [s.word, s.vi]));
+        if (Array.isArray(parsed)) {
+          return parsed.map((w) => normalize({ ...w, vi: w.vi || sampleVi.get(w.word) }));
+        }
       }
     } catch (_) { /* fall through to sample deck */ }
     return SAMPLE_WORDS.map(normalize);
@@ -111,13 +116,27 @@
     el.card.classList.remove('flipped');
     el.card.classList.toggle('known', w.known);
 
-    const reverse = el.reverse.checked;
-    el.frontLabel.textContent = reverse ? 'Meaning' : 'Word';
-    el.backLabel.textContent = reverse ? 'Word' : 'Meaning';
-    el.frontText.textContent = reverse ? w.meaning : w.word;
-    el.frontSub.textContent = reverse ? '' : w.sub;
-    el.backText.textContent = reverse ? w.word : w.meaning;
-    el.backSub.textContent = reverse ? w.sub : '';
+    // Front shows the chosen side; the back shows the rest. A word with no
+    // Vietnamese meaning falls back to the English meaning on a Vietnamese front.
+    const mode = el.frontMode.value === 'vi' && !w.vi ? 'meaning' : el.frontMode.value;
+    const word = { label: 'Word', text: w.word, sub: w.sub, lang: 'en' };
+    const sides = {
+      word,
+      meaning: { label: 'Meaning', text: w.meaning, sub: '', lang: 'en' },
+      vi: { label: 'Tiếng Việt', text: w.vi, sub: '', lang: 'vi' },
+    };
+    const front = sides[mode];
+    const back = mode === 'word' ? sides.meaning : word;
+    const extra = mode === 'vi' ? sides.meaning : (w.vi ? sides.vi : null);
+    el.frontLabel.textContent = front.label;
+    el.frontText.textContent = front.text;
+    el.frontText.lang = front.lang;
+    el.frontSub.textContent = front.sub;
+    el.backLabel.textContent = back.label;
+    el.backText.textContent = back.text;
+    el.backSub.textContent = back.sub;
+    el.backExtra.textContent = extra ? `${extra.label}: ${extra.text}` : '';
+    el.backExtra.lang = extra ? extra.lang : '';
     el.backExample.textContent = w.example ? `“${w.example}”` : '';
   }
 
@@ -149,10 +168,15 @@
   }
 
   // ---------- Manage ----------
+  // Lower-case and drop Vietnamese tone and vowel marks, so "pho bien" finds "phổ biến".
+  function fold(text) {
+    return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/gi, 'd').toLowerCase();
+  }
+
   function renderList() {
-    const q = el.search.value.trim().toLowerCase();
+    const q = fold(el.search.value.trim());
     const items = words.filter((w) =>
-      !q || w.word.toLowerCase().includes(q) || w.meaning.toLowerCase().includes(q));
+      !q || [w.word, w.meaning, w.vi].some((field) => fold(field).includes(q)));
 
     el.list.replaceChildren(...items.map((w) => {
       const li = document.createElement('li');
@@ -180,6 +204,13 @@
       m.className = 'm';
       m.textContent = w.meaning;
       info.append(head, m);
+      if (w.vi) {
+        const v = document.createElement('p');
+        v.className = 'v';
+        v.lang = 'vi';
+        v.textContent = w.vi;
+        info.append(v);
+      }
       if (w.example) {
         const e = document.createElement('p');
         e.className = 'e';
@@ -218,6 +249,7 @@
     el.fWord.value = w.word;
     el.fSub.value = w.sub;
     el.fMeaning.value = w.meaning;
+    el.fVi.value = w.vi;
     el.fExample.value = w.example;
     el.formTitle.textContent = 'Edit word';
     el.saveBtn.textContent = 'Save changes';
@@ -248,14 +280,14 @@
     e.preventDefault();
     const data = normalize({
       word: el.fWord.value, sub: el.fSub.value,
-      meaning: el.fMeaning.value, example: el.fExample.value,
+      meaning: el.fMeaning.value, vi: el.fVi.value, example: el.fExample.value,
     });
     if (!data.word || !data.meaning) return;
 
     const editId = el.editId.value;
     if (editId) {
       const w = words.find((x) => x.id === editId);
-      if (w) Object.assign(w, { word: data.word, sub: data.sub, meaning: data.meaning, example: data.example });
+      if (w) Object.assign(w, { word: data.word, sub: data.sub, meaning: data.meaning, vi: data.vi, example: data.example });
       toast('Word updated');
     } else {
       const dup = words.some((w) => w.word.toLowerCase() === data.word.toLowerCase());
@@ -280,13 +312,30 @@
     URL.revokeObjectURL(a.href);
   }
 
-  // Accepts JSON (array of {word, meaning, ...}) or CSV/TSV lines: word,meaning[,example]
+  // Header names accepted in CSV/TSV files, mapped to word fields.
+  const COLUMNS = {
+    word: 'word', meaning: 'meaning', english: 'meaning', example: 'example',
+    vi: 'vi', vietnamese: 'vi', 'tiếng việt': 'vi', pronunciation: 'sub',
+  };
+
+  // Accepts JSON (array of {word, meaning, vi, ...}) or CSV/TSV lines.
+  // Without a header row each line is word,meaning[,example]. With a header row
+  // (e.g. "word,meaning,vi,example") columns are matched by name.
   function parseImport(text) {
     const trimmed = text.trim();
     if (trimmed.startsWith('[')) return JSON.parse(trimmed);
-    return trimmed.split(/\r?\n/).filter(Boolean).map((line) => {
-      const parts = line.includes('\t') ? line.split('\t') : line.split(',');
-      const [word, meaning, ...rest] = parts.map((p) => p.trim());
+    const lines = trimmed.split(/\r?\n/).filter(Boolean);
+    const split = (line) => (line.includes('\t') ? line.split('\t') : line.split(',')).map((p) => p.trim());
+    const header = split(lines[0]).map((h) => COLUMNS[h.toLowerCase()]);
+    if (header.includes('word') && header.includes('meaning')) {
+      return lines.slice(1).map((line) => {
+        const w = {};
+        split(line).forEach((value, i) => { if (header[i]) w[header[i]] = value; });
+        return w;
+      });
+    }
+    return lines.map((line) => {
+      const [word, meaning, ...rest] = split(line);
       return { word, meaning, example: rest.join(', ') };
     });
   }
@@ -336,7 +385,7 @@
   el.markKnown.addEventListener('click', () => mark(true));
   el.markLearning.addEventListener('click', () => mark(false));
   el.filter.addEventListener('change', () => { index = 0; buildOrder(false); });
-  el.reverse.addEventListener('change', renderCard);
+  el.frontMode.addEventListener('change', renderCard);
   el.shuffle.addEventListener('click', () => {
     shuffled = true;
     index = 0;
