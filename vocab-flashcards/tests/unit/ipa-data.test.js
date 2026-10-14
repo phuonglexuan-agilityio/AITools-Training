@@ -14,7 +14,7 @@ function loadData() {
 }
 
 const { IPA_GROUPS, IPA_SOUNDS } = loadData();
-const allWords = IPA_SOUNDS.flatMap((s) => s.words.map(([word, marked]) => ({ word, marked, sound: s })));
+const allWords = IPA_SOUNDS.flatMap((s) => s.words.map(([word, marked, vi]) => ({ word, marked, vi, sound: s })));
 const swapFocus = (marked, sound) => marked.replace(/\[[^\]]*\]/, sound);
 const strip = (marked) => marked.replace(/[[\]]/g, '');
 
@@ -58,6 +58,20 @@ test('each transcription marks exactly its own focus sound', () => {
     assert.equal((marked.match(/\]/g) || []).length, 1, `${word}: one closing bracket`);
     assert.ok(marked.includes(`[${sound.symbol}]`), `${word}: marks /${sound.symbol}/ (got ${marked})`);
   });
+});
+
+test('every example word has a Vietnamese meaning', () => {
+  IPA_SOUNDS.forEach((s) => s.words.forEach((entry) => assert.equal(entry.length, 3, `${entry[0]}: [word, ipa, vi]`)));
+  allWords.forEach(({ word, vi }) => {
+    assert.equal(typeof vi, 'string', word);
+    assert.ok(vi.trim().length > 0, `${word}: empty Vietnamese meaning`);
+    assert.equal(vi, vi.trim(), `${word}: stray spaces`);
+    assert.notEqual(vi.toLowerCase(), word, `${word}: Vietnamese meaning is just the English word`);
+  });
+});
+
+test('Vietnamese meanings are stored in composed Unicode (NFC)', () => {
+  allWords.forEach(({ word, vi }) => assert.equal(vi, vi.normalize('NFC'), word));
 });
 
 test('transcriptions use IPA ɡ (U+0261), never the ASCII letter g', () => {
