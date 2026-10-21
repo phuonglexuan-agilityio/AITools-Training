@@ -127,4 +127,45 @@ test.describe('Study tab', () => {
     await app.reload();
     await expect(app.locator('#known-count')).toHaveText('2 / 6 known');
   });
+
+  test.describe('pronunciation', () => {
+    test.beforeEach(async ({ app }) => {
+      // Record speech instead of playing it.
+      await app.evaluate(() => {
+        window.__spoken = [];
+        window.speechSynthesis.speak = (u) => window.__spoken.push(u.text);
+      });
+    });
+
+    test('the word face shows the IPA and speaks the word', async ({ app }) => {
+      await expect(app.locator('#front-sub')).toHaveText('/ɪˈfem.ər.əl/ (adj)');
+      await app.click('#speak');
+      await app.click('#next');
+      await app.keyboard.press('s');
+      expect(await app.evaluate(() => window.__spoken)).toEqual(['ephemeral', 'meticulous']);
+      await expect(app.locator('#card')).not.toHaveClass(/flipped/);
+    });
+
+    test('the speaker hides while the word is the answer', async ({ app }) => {
+      await app.selectOption('#front-mode', 'meaning');
+      await app.locator('#card').focus();
+      await expect(app.locator('#speak')).toBeHidden();
+      await app.keyboard.press('s');
+      expect(await app.evaluate(() => window.__spoken)).toEqual([]);
+
+      await app.keyboard.press('Space');
+      await expect(app.locator('#speak')).toBeVisible();
+      await app.click('#speak');
+      expect(await app.evaluate(() => window.__spoken)).toEqual(['ephemeral']);
+
+      await app.click('#next');
+      await expect(app.locator('#speak')).toBeHidden();
+    });
+
+    test('a word front hides the speaker once flipped to the meaning', async ({ app }) => {
+      await expect(app.locator('#speak')).toBeVisible();
+      await app.click('#card');
+      await expect(app.locator('#speak')).toBeHidden();
+    });
+  });
 });

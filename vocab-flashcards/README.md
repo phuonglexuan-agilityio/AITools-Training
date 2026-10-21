@@ -49,6 +49,8 @@ try it straight away.
   *Still learning* (1) or *I know it* (2), filter by status and shuffle.
   Choose the card's **Front**: the word, its English meaning or its Vietnamese
   meaning; the back shows the rest. A progress bar tracks known words.
+  The word's face shows its IPA pronunciation and a 🔊 button (or S) that
+  speaks the word; the button hides while the word is still the answer.
 - **IPA practice (Phase 1)** — learn the 44 sounds of British English (RP)
   through 132 example words (3 per sound):
   - *Sound chart* — every IPA symbol grouped into short vowels, long vowels,
@@ -90,6 +92,7 @@ The app has three tabs.
    the English meaning or the Vietnamese meaning.
 3. Click the card (or press Space) to flip it. The back shows the other
    fields plus the pronunciation and example sentence.
+   Press 🔊 (or S) on the word's face to hear it.
 4. Press **Still learning** or **I know it**. The card moves on and the
    progress bar updates.
 5. **Shuffle** randomises the order.
@@ -128,6 +131,7 @@ Transcriptions use British English (RP).
 | Study | ← / → | Previous / next card |
 | Study | 1 | Mark *Still learning* |
 | Study | 2 | Mark *I know it* |
+| Study | S | Hear the word (when the word's face is up) |
 | IPA flashcards | Space / Enter | Flip card |
 | IPA flashcards | ← / → | Previous / next card |
 | IPA flashcards | S | Hear the word |
@@ -206,6 +210,7 @@ vocab-flashcards/
 ├── app.js                # Study + Manage words: deck state, storage, import/export
 ├── ipa-data.js           # IPA deck: 44 sounds, groups, tips and example words
 ├── ipa.js                # IPA practice view: sound chart, flashcards, quiz, audio
+├── speech.js             # Speaks words with the browser's voice (Study and IPA)
 ├── confirm-dialog.js     # In-page replacement for window.confirm()
 ├── package.json          # Test scripts and the Playwright dev dependency
 ├── package-lock.json
@@ -225,11 +230,13 @@ vocab-flashcards/
 ## How the code fits together
 
 - Each script is a self-contained IIFE loaded with a plain `<script>` tag in
-  `index.html`, in this order: `confirm-dialog.js`, `app.js`, `ipa-data.js`,
-  `ipa.js`. There are no modules or bundler.
+  `index.html`, in this order: `confirm-dialog.js`, `speech.js`, `app.js`,
+  `ipa-data.js`, `ipa.js`. There are no modules or bundler.
 - `confirm-dialog.js` exposes `window.askConfirm(message, okLabel)`, which the
   other scripts `await`; it resolves `true` for OK and `false` for Cancel, Escape or a click
   on the backdrop.
+- `speech.js` exposes `window.speech = { canSpeak, speak(text) }`, which uses
+  `speechSynthesis` with a British English voice when one is installed.
 - `app.js` owns the word deck. Every word is normalised to
   `{ id, word, sub, meaning, example, vi, known }` and the whole list is saved
   to `localStorage` after each change.
@@ -304,7 +311,7 @@ characters (for example `ɡ`, not `g`), and include a Vietnamese meaning. Run
 
 ## Troubleshooting
 
-- **No sound in IPA practice**: audio uses your browser's speech voices. Check
+- **No sound in Study or IPA practice**: audio uses your browser's speech voices. Check
   that your system has an English voice installed and that the tab is not
   muted. Voices differ between browsers and operating systems.
 - **My words disappeared**: they live in one browser's `localStorage`. A

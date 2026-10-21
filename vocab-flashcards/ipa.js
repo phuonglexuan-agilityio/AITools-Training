@@ -75,17 +75,7 @@
     return span;
   }
 
-  const canSpeak = 'speechSynthesis' in window;
-  function speak(text) {
-    if (!canSpeak) return;
-    const u = new SpeechSynthesisUtterance(text);
-    const voice = speechSynthesis.getVoices().find((v) => v.lang === 'en-GB');
-    u.lang = 'en-GB';
-    if (voice) u.voice = voice;
-    u.rate = 0.85;
-    speechSynthesis.cancel();
-    speechSynthesis.speak(u);
-  }
+  const { canSpeak, speak } = window.speech;
 
   function speakBtn(text, label = '🔊') {
     const b = make('button', 'btn small ghost speak', label);
