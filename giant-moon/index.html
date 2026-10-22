@@ -48,7 +48,7 @@
     <section id="songs" class="panel gated">
       <div class="moon moon-small" aria-hidden="true"></div>
       <h2 class="reveal">Happy Birthday, Giant Moon</h2>
-      <p class="hint reveal">Tap a card to sing 🎶</p>
+      <p class="hint reveal">Tap a card to sing along 🎤</p>
       <div class="cards">
         <button class="song-card reveal" data-song="en" type="button" aria-expanded="false">
           <span class="card-face card-front"><span class="card-flag">English</span><span class="card-sub">tap to open</span></span>
@@ -73,18 +73,21 @@
 
     <!-- 3. Personality -->
     <section id="personality" class="panel gated">
-      <h2 class="reveal">The Giant Moon Personality</h2>
-      <p class="badge reveal">♏ Scorpio · Water element</p>
+      <h2 class="reveal">Warning: Cute Scorpio Inside</h2>
+      <p class="badge reveal">♏ Scorpio · Water element · Handle with snacks</p>
       <div class="constellation reveal">
         <svg class="links" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
           <polyline points="22,22 74,30 66,74 28,68 22,22"/>
         </svg>
-        <button class="star" style="left:22%;top:22%" type="button" data-text="Being around you feels like cool water on a warm night: quiet, steady, peaceful." data-title="🌊 Cool &amp; Calm"><span>🌊</span></button>
-        <button class="star" style="left:74%;top:30%" type="button" data-text="There is a whole inner universe in you that not everyone gets to see." data-title="🌌 Deep &amp; Mysterious"><span>🌌</span></button>
-        <button class="star" style="left:66%;top:74%" type="button" data-text="You are patient, kind and gentle with everyone, even on the hard days." data-title="🪷 Patient &amp; Kind"><span>🪷</span></button>
-        <button class="star" style="left:28%;top:68%" type="button" data-text="No noise, no show. Just showing up for work, training and life, again and again." data-title="🔥 Quietly Disciplined"><span>🔥</span></button>
+        <button class="scorpion" id="scorpion" type="button" aria-label="Tap the little scorpion">
+          <img src="assets/scorpion.svg" alt="" width="200" height="200">
+        </button>
+        <button class="star" style="left:22%;top:22%" type="button" data-text="Being around you feels like cool water on a warm night: quiet, steady, peaceful." data-title="🌊 Cool &amp; Calm" data-sfx="bloop"><span>🌊</span></button>
+        <button class="star" style="left:74%;top:30%" type="button" data-text="There is a whole inner universe in you that not everyone gets to see." data-title="🌌 Deep &amp; Mysterious" data-sfx="sparkle"><span>🌌</span></button>
+        <button class="star" style="left:66%;top:74%" type="button" data-text="You are patient, kind and gentle with everyone, even on the hard days." data-title="🪷 Patient &amp; Kind" data-sfx="chime"><span>🪷</span></button>
+        <button class="star" style="left:28%;top:68%" type="button" data-text="No noise, no show. Just showing up for work, training and life, again and again." data-title="🔥 Quietly Disciplined" data-sfx="boing"><span>🔥</span></button>
       </div>
-      <p class="hint" id="star-hint">Tap a star ✦</p>
+      <p class="hint" id="star-hint">Tap a star (or the scorpion) ✦</p>
       <div class="trait-card" id="trait-card" role="status" aria-live="polite" hidden>
         <strong id="trait-title"></strong>
         <p id="trait-text"></p>
@@ -94,16 +97,18 @@
     <!-- 4. Gym-Food Paradox -->
     <section id="paradox" class="panel gated">
       <h2 class="reveal">The Gym-Food Paradox</h2>
-      <button class="chibi reveal" id="chibi" type="button" aria-label="Giant Moon chibi. Tap her!">
-        <img src="assets/chibi/lift.svg" alt="" class="frame is-on" data-pose="lift" width="300" height="360">
-        <img src="assets/chibi/drink.svg" alt="" class="frame" data-pose="drink" width="300" height="360">
-        <img src="assets/chibi/spot.svg" alt="" class="frame" data-pose="spot" width="300" height="360">
-        <img src="assets/chibi/sparkle.svg" alt="" class="frame" data-pose="sparkle" width="300" height="360">
-        <img src="assets/chibi/hug.svg" alt="" class="frame" data-pose="hug" width="300" height="360">
-        <img src="assets/chibi/wink.svg" alt="" class="frame" data-pose="wink" width="300" height="360">
-        <span class="food" aria-hidden="true">🍔</span>
-      </button>
-      <p class="hint">Tap her 💪</p>
+      <div class="chibi-stage reveal">
+        <button class="chibi" id="chibi" type="button" aria-label="Giant Moon chibi. Tap for a surprise!">
+          <img src="assets/chibi/lift.svg" alt="" class="frame is-on" data-pose="lift" width="300" height="360">
+          <img src="assets/chibi/drink.svg" alt="" class="frame" data-pose="drink" width="300" height="360">
+          <img src="assets/chibi/spot.svg" alt="" class="frame" data-pose="spot" width="300" height="360">
+          <img src="assets/chibi/sparkle.svg" alt="" class="frame" data-pose="sparkle" width="300" height="360">
+          <img src="assets/chibi/hug.svg" alt="" class="frame" data-pose="hug" width="300" height="360">
+          <img src="assets/chibi/wink.svg" alt="" class="frame" data-pose="wink" width="300" height="360">
+          <span class="food" aria-hidden="true">🍔</span>
+        </button>
+      </div>
+      <p class="hint">Tap the chibi 💪</p>
       <p class="slogan" id="slogan" aria-live="polite">Discipline in the gym. Loyalty to food.</p>
     </section>
 

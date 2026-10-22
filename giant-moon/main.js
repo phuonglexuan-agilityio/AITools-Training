@@ -73,22 +73,30 @@
     });
   }
 
-  function fireworks() {
+  // Fireworks across the whole screen: bursts all over the sky plus cannons from both bottom corners.
+  function fireworks(duration = 2600) {
     burstStars();
     if (!window.confetti || reduceMotion) return;
-    const end = Date.now() + 2600;
+    const end = Date.now() + duration;
+    const cannon = (x, angle) =>
+      window.confetti({ particleCount: 70, angle, spread: 65, startVelocity: 60, ticks: 160, colors: COLORS, origin: { x, y: 1 } });
+    cannon(0, 60);
+    cannon(1, 120);
     (function frame() {
-      window.confetti({
-        particleCount: 40,
-        startVelocity: 26,
-        spread: 360,
-        ticks: 70,
-        gravity: 0.7,
-        colors: COLORS,
-        shapes: ["star", "circle"],
-        origin: { x: 0.15 + Math.random() * 0.7, y: 0.15 + Math.random() * 0.35 },
-      });
-      if (Date.now() < end) setTimeout(frame, 320);
+      for (let i = 0; i < 2; i++) {
+        window.confetti({
+          particleCount: 45,
+          startVelocity: 28,
+          spread: 360,
+          ticks: 90,
+          gravity: 0.6,
+          scalar: 1.1,
+          colors: COLORS,
+          shapes: ["star", "circle"],
+          origin: { x: 0.05 + Math.random() * 0.9, y: 0.08 + Math.random() * 0.6 },
+        });
+      }
+      if (Date.now() < end) setTimeout(frame, 260);
     })();
   }
 
@@ -128,9 +136,16 @@
   const dots = $$(".dots a");
   const sectionObserver = new IntersectionObserver((entries) => {
     entries.forEach((e) => {
+      if (e.target.id === "paradox") {
+        if (e.isIntersecting) {
+          startChibi();
+          window.MusicBox.startLoop();
+        } else {
+          window.MusicBox.stopLoop();
+        }
+      }
       if (!e.isIntersecting) return;
       dots.forEach((d) => d.classList.toggle("current", d.getAttribute("href") === "#" + e.target.id));
-      if (e.target.id === "paradox") startChibi();
     });
   }, { threshold: 0.5 });
   $$(".panel").forEach((p) => sectionObserver.observe(p));
@@ -148,6 +163,7 @@
       confettiAt(card);
       const lines = card.querySelectorAll(".line");
       window.MusicBox.play({
+        lang: card.dataset.song,
         onPhrase: (i) => lines.forEach((l, j) => l.classList.toggle("lit", i === j)),
         onEnd: () => {
           lines.forEach((l) => l.classList.remove("lit"));
@@ -159,18 +175,38 @@
 
   /* ---------- Personality stars ---------- */
   const traitCard = $("#trait-card");
+  function showTrait(title, text) {
+    $("#trait-title").textContent = title;
+    $("#trait-text").textContent = text;
+    traitCard.hidden = false;
+    // restart the fade-in for each new trait
+    traitCard.style.animation = "none";
+    void traitCard.offsetWidth;
+    traitCard.style.animation = "";
+    $("#star-hint").classList.add("gone");
+  }
+
+  function replay(el, className) {
+    el.classList.remove(className);
+    void el.offsetWidth;
+    el.classList.add(className);
+  }
+
   $$(".star").forEach((star) => {
     star.addEventListener("click", () => {
       $$(".star").forEach((s) => s.classList.toggle("active", s === star));
-      $("#trait-title").textContent = star.dataset.title;
-      $("#trait-text").textContent = star.dataset.text;
-      traitCard.hidden = false;
-      // restart the fade-in for each new trait
-      traitCard.style.animation = "none";
-      void traitCard.offsetWidth;
-      traitCard.style.animation = "";
-      $("#star-hint").classList.add("gone");
+      replay(star, "pop");
+      window.MusicBox.sfx(star.dataset.sfx);
+      showTrait(star.dataset.title, star.dataset.text);
     });
+  });
+
+  const scorpion = $("#scorpion");
+  scorpion.addEventListener("click", () => {
+    $$(".star").forEach((s) => s.classList.remove("active"));
+    replay(scorpion, "wiggle");
+    window.MusicBox.sfx("snip");
+    showTrait("🦂 Tiny Scorpio, Big Heart", "Warning: may sting if you steal her fries. Otherwise 100% soft.");
   });
 
   /* ---------- Gym-Food Paradox ---------- */
@@ -201,17 +237,16 @@
 
   chibi.addEventListener("click", () => {
     clearTimeout(loopTimer);
-    chibi.classList.remove("jump");
-    void chibi.offsetWidth;
-    chibi.classList.add("jump");
+    replay(chibi, "jump");
     showPose("wink");
-    confettiAt(chibi, { particleCount: 30, spread: 60, shapes: ["circle"], scalar: 0.8 });
-    loopTimer = setTimeout(nextPose, 1400);
+    window.MusicBox.sfx("tada");
+    fireworks(1600);
+    loopTimer = setTimeout(nextPose, 1600);
   });
 
   const slogans = [
     "Discipline in the gym. Loyalty to food.",
-    "She lifts heavy. She eats happily.",
+    "You lift heavy. You eat happily.",
     "Strong body, soft heart, big appetite.",
   ];
   const sloganEl = $("#slogan");
