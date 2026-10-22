@@ -101,10 +101,31 @@
   (document.fonts ? document.fonts.ready : Promise.resolve()).then(placeFaces);
 
   /* ---------- Confetti helpers ---------- */
+  // Our own canvas without a worker: the worker path is unreliable on iOS Safari.
+  let confettiCannon = null;
+  try {
+    if (window.confetti) {
+      const canvas = document.createElement("canvas");
+      canvas.className = "confetti-canvas";
+      document.body.appendChild(canvas);
+      confettiCannon = window.confetti.create(canvas, { resize: true, useWorker: false });
+    }
+  } catch (e) {
+    console.warn("confetti unavailable", e);
+  }
+
+  function burst(opts) {
+    if (!confettiCannon || reduceMotion) return;
+    try {
+      confettiCannon(opts);
+    } catch (e) {
+      console.warn("confetti error", e);
+    }
+  }
+
   function confettiAt(el, opts = {}) {
-    if (!window.confetti || reduceMotion) return;
     const rect = el.getBoundingClientRect();
-    window.confetti({
+    burst({
       particleCount: 90,
       spread: 75,
       startVelocity: 32,
@@ -117,15 +138,15 @@
   // Fireworks across the whole screen: bursts all over the sky plus cannons from both bottom corners.
   function fireworks(duration = 2600) {
     burstStars();
-    if (!window.confetti || reduceMotion) return;
+    if (!confettiCannon || reduceMotion) return;
     const end = Date.now() + duration;
     const cannon = (x, angle) =>
-      window.confetti({ particleCount: 70, angle, spread: 65, startVelocity: 60, ticks: 160, colors: COLORS, origin: { x, y: 1 } });
+      burst({ particleCount: 70, angle, spread: 65, startVelocity: 60, ticks: 160, colors: COLORS, origin: { x, y: 1 } });
     cannon(0, 60);
     cannon(1, 120);
     (function frame() {
       for (let i = 0; i < 2; i++) {
-        window.confetti({
+        burst({
           particleCount: 45,
           startVelocity: 28,
           spread: 360,
@@ -143,15 +164,16 @@
 
   /* ---------- Enter ---------- */
   $("#enter").addEventListener("click", () => {
+    document.body.classList.remove("locked");
     window.MusicBox.unlock();
     burstStars();
-    if (window.confetti && !reduceMotion) {
-      window.confetti({ particleCount: 60, spread: 120, startVelocity: 22, shapes: ["star"], colors: ["#fff4d6", "#ffffff"], origin: { y: 0.45 } });
-    }
-    document.body.classList.remove("locked");
+    burst({ particleCount: 60, spread: 120, startVelocity: 22, shapes: ["star"], colors: ["#fff4d6", "#ffffff"], origin: { y: 0.45 } });
     window.MusicBox.play({ volume: 0.18 });
     setTimeout(() => $("#songs").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" }), 900);
   });
+
+  // Re-unlock sound on every tap: iOS may suspend audio when the page was in the background.
+  ["touchend", "click"].forEach((type) => document.addEventListener(type, () => window.MusicBox.unlock(), { passive: true }));
 
   /* ---------- Mute ---------- */
   const muteBtn = $("#mute");
@@ -235,18 +257,18 @@
   $$(".star").forEach((star) => {
     star.addEventListener("click", () => {
       $$(".star").forEach((s) => s.classList.toggle("active", s === star));
+      showTrait(star.dataset.title, star.dataset.text);
       replay(star, "pop");
       window.MusicBox.sfx(star.dataset.sfx);
-      showTrait(star.dataset.title, star.dataset.text);
     });
   });
 
   const scorpion = $("#scorpion");
   scorpion.addEventListener("click", () => {
     $$(".star").forEach((s) => s.classList.remove("active"));
+    showTrait("🦂 Tiny Scorpio, Big Heart", "Warning: may sting if you steal her fries. Otherwise 100% soft.");
     replay(scorpion, "wiggle");
     window.MusicBox.sfx("snip");
-    showTrait("🦂 Tiny Scorpio, Big Heart", "Warning: may sting if you steal her fries. Otherwise 100% soft.");
   });
 
   /* ---------- Gym-Food Paradox ---------- */

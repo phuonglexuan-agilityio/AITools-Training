@@ -22,6 +22,31 @@
   let loop = null;
   let noiseBuffer = null;
 
+  // iPhones mute Web Audio when the ring/silent switch is on. Asking for a "playback" audio
+  // session (Safari 17+) or playing a silent <audio> element during a tap lifts that.
+  let silentAudio = null;
+  function unlockIOS() {
+    try {
+      if (navigator.audioSession) navigator.audioSession.type = "playback";
+    } catch (e) { /* not supported */ }
+    if (silentAudio) return;
+    const rate = 8000;
+    const samples = rate / 2;
+    const buf = new ArrayBuffer(44 + samples);
+    const v = new DataView(buf);
+    const str = (o, t) => [...t].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
+    str(0, "RIFF"); v.setUint32(4, 36 + samples, true); str(8, "WAVEfmt ");
+    v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+    v.setUint32(24, rate, true); v.setUint32(28, rate, true); v.setUint16(32, 1, true); v.setUint16(34, 8, true);
+    str(36, "data"); v.setUint32(40, samples, true);
+    for (let i = 0; i < samples; i++) v.setUint8(44 + i, 128); // 8-bit silence
+    silentAudio = new Audio(URL.createObjectURL(new Blob([buf], { type: "audio/wav" })));
+    silentAudio.loop = true;
+    silentAudio.setAttribute("playsinline", "");
+    const p = silentAudio.play();
+    if (p && p.catch) p.catch(() => { silentAudio = null; });
+  }
+
   function ensureContext() {
     if (!ctx) {
       const AC = window.AudioContext || window.webkitAudioContext;
@@ -34,7 +59,8 @@
       const data = noiseBuffer.getChannelData(0);
       for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
     }
-    if (ctx.state === "suspended") ctx.resume();
+    // iOS can also leave the context "interrupted" (e.g. after a call or locking the phone)
+    if (ctx.state !== "running") ctx.resume();
     return ctx;
   }
 
@@ -47,7 +73,8 @@
     gain.gain.setValueAtTime(0.0001, start);
     gain.gain.exponentialRampToValueAtTime(volume, start + attack);
     gain.gain.exponentialRampToValueAtTime(0.0001, start + decay);
-    osc.connect(gain).connect(out);
+    osc.connect(gain);
+    gain.connect(out);
     osc.start(start);
     osc.stop(start + decay + 0.05);
     return osc;
@@ -64,7 +91,9 @@
     gain.gain.setValueAtTime(0.0001, start);
     gain.gain.exponentialRampToValueAtTime(volume, start + 0.015);
     gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
-    src.connect(filter).connect(gain).connect(out);
+    src.connect(filter);
+    filter.connect(gain);
+    gain.connect(out);
     src.start(start);
     src.stop(start + duration + 0.05);
   }
@@ -76,40 +105,49 @@
   function stop() {
     if (!playing) return;
     playing.timers.forEach(clearTimeout);
-    playing.bus.gain.setTargetAtTime(0, ctx.currentTime, 0.05);
     const bus = playing.bus;
-    setTimeout(() => bus.disconnect(), 400);
+    if (bus) {
+      bus.gain.setTargetAtTime(0, ctx.currentTime, 0.05);
+      setTimeout(() => bus.disconnect(), 400);
+    }
     playing = null;
   }
 
+
   // Happy Birthday; onPhrase(i) fires as each line starts.
   function play({ volume = 0.35, onPhrase, onEnd } = {}) {
-    if (!ensureContext()) {
-      if (onEnd) onEnd();
-      return;
-    }
     stop();
-    const bus = ctx.createGain();
-    bus.connect(master);
+    // Lyric timing runs on plain timers, so the words still light up even if audio fails.
     const timers = [];
-    let t = ctx.currentTime + 0.12;
-    const t0 = t;
-
+    let beats = 0;
     PHRASES.forEach((phrase, i) => {
-      const phraseStart = t;
-      timers.push(setTimeout(() => onPhrase && onPhrase(i), (phraseStart - t0) * 1000));
-      phrase.forEach(([note, beats]) => {
-        musicBoxNote(NOTE[note], t, volume, bus);
-        t += beats * BEAT;
-      });
+      const at = beats * BEAT * 1000 + 120;
+      timers.push(setTimeout(() => onPhrase && onPhrase(i), at));
+      phrase.forEach(([, b]) => (beats += b));
     });
     timers.push(setTimeout(() => {
-      if (playing && playing.bus === bus) playing = null;
+      if (playing && playing.timers === timers) playing = null;
       if (onEnd) onEnd();
-    }, (t - t0) * 1000 + 600));
+    }, beats * BEAT * 1000 + 720));
+    playing = { bus: null, timers };
 
-    playing = { bus, timers };
+    try {
+      if (!ensureContext()) return;
+      const bus = ctx.createGain();
+      bus.connect(master);
+      playing.bus = bus;
+      let t = ctx.currentTime + 0.12;
+      PHRASES.forEach((phrase) => {
+        phrase.forEach(([note, b]) => {
+          musicBoxNote(NOTE[note], t, volume, bus);
+          t += b * BEAT;
+        });
+      });
+    } catch (e) {
+      console.warn("sound error", e);
+    }
   }
+
 
   /* ---------- Sound effects ---------- */
   const SFX = {
@@ -135,7 +173,8 @@
       const depth = ctx.createGain();
       lfo.frequency.value = 18;
       depth.gain.value = 40;
-      lfo.connect(depth).connect(o.frequency);
+      lfo.connect(depth);
+      depth.connect(o.frequency);
       lfo.start(t);
       lfo.stop(t + 0.6);
     },
@@ -205,5 +244,27 @@
     if (master) master.gain.setTargetAtTime(muted ? 0 : 0.6, ctx.currentTime, 0.05);
   }
 
-  window.MusicBox = { play, stop, sfx, startLoop, stopLoop, setMuted, unlock: ensureContext };
+  function unlock() {
+    unlockIOS();
+    ensureContext();
+  }
+
+  // Sound must never break the page: any audio error is logged and ignored.
+  const safe = (fn) => (...args) => {
+    try {
+      return fn(...args);
+    } catch (e) {
+      console.warn("sound error", e);
+    }
+  };
+
+  window.MusicBox = {
+    play: safe(play),
+    stop: safe(stop),
+    sfx: safe(sfx),
+    startLoop: safe(startLoop),
+    stopLoop: safe(stopLoop),
+    setMuted: safe(setMuted),
+    unlock: safe(unlock),
+  };
 })();
