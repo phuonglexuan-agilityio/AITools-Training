@@ -1,0 +1,8 @@
+# Netlify: set "Base directory" to giant-moon. No build step; the folder is served as is.
+[build]
+  publish = "."
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
