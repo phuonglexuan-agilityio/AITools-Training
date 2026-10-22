@@ -194,7 +194,15 @@
       }
     });
   }, { threshold: 0.2 });
+  // stagger the reveals inside each section so they flow in one after another
+  $$(".panel").forEach((panel) => {
+    panel.querySelectorAll(".reveal").forEach((el, i) => el.style.setProperty("--d", `${i * 0.12}s`));
+  });
   $$(".reveal").forEach((el) => revealObserver.observe(el));
+
+  $$(".next").forEach((btn) =>
+    btn.addEventListener("click", () => $(btn.dataset.next).scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" }))
+  );
 
   const dots = $$(".dots a");
   const sectionObserver = new IntersectionObserver((entries) => {
@@ -210,28 +218,56 @@
       if (!e.isIntersecting) return;
       dots.forEach((d) => d.classList.toggle("current", d.getAttribute("href") === "#" + e.target.id));
     });
-  }, { threshold: 0.5 });
+  }, { rootMargin: "-45% 0px -45% 0px" }); // a section counts as current while it crosses the middle of the screen
   $$(".panel").forEach((p) => sectionObserver.observe(p));
 
-  /* ---------- Songs ---------- */
-  const cards = $$(".song-card");
-  cards.forEach((card) => {
-    card.addEventListener("click", () => {
-      cards.forEach((c) => {
-        const isThis = c === card;
-        c.classList.toggle("open", isThis);
-        c.setAttribute("aria-expanded", String(isThis));
-        c.querySelectorAll(".line").forEach((l) => l.classList.remove("lit"));
-      });
-      confettiAt(card);
-      const lines = card.querySelectorAll(".line");
-      window.MusicBox.play({
-        onPhrase: (i) => lines.forEach((l, j) => l.classList.toggle("lit", i === j)),
-        onEnd: () => {
-          lines.forEach((l) => l.classList.remove("lit"));
-          confettiAt(card, { particleCount: 50 });
-        },
-      });
+  /* ---------- Birthday song + dancing chibi ---------- */
+  const card = $(".song-card");
+  const dancer = $("#dancer");
+  const notesBox = $("#notes");
+  const dancePoses = ["wink", "sparkle", "wink", "hug"]; // one per lyric line; she hugs the cake at the end
+  let step = 0;
+
+  function setDancePose(name) {
+    dancer.querySelectorAll(".frame").forEach((f) => f.classList.toggle("is-on", f.dataset.pose === name));
+  }
+
+  function floatNote() {
+    if (reduceMotion) return;
+    const n = document.createElement("span");
+    n.className = "note";
+    n.textContent = ["♪", "♫", "♬", "♩"][step % 4];
+    n.style.left = `${15 + Math.random() * 70}%`;
+    n.style.setProperty("--drift", `${Math.round(Math.random() * 60 - 30)}px`);
+    notesBox.appendChild(n);
+    setTimeout(() => n.remove(), 1800);
+  }
+
+  card.addEventListener("click", () => {
+    card.classList.add("open");
+    card.setAttribute("aria-expanded", "true");
+    const lines = card.querySelectorAll(".line");
+    lines.forEach((l) => l.classList.remove("lit"));
+    confettiAt(card);
+    dancer.classList.add("dancing");
+    window.MusicBox.play({
+      onPhrase: (i) => {
+        lines.forEach((l, j) => l.classList.toggle("lit", i === j));
+        setDancePose(dancePoses[i]);
+      },
+      onNote: (beats) => {
+        // hop on every note, leaning left and right; long notes get a bigger spin
+        step++;
+        dancer.style.setProperty("--lean", `${step % 2 ? -8 : 8}deg`);
+        replay(dancer, beats >= 2 ? "spin" : "hop");
+        floatNote();
+      },
+      onEnd: () => {
+        lines.forEach((l) => l.classList.remove("lit"));
+        dancer.classList.remove("dancing", "hop", "spin");
+        setDancePose("wink");
+        confettiAt(card, { particleCount: 80 });
+      },
     });
   });
 
