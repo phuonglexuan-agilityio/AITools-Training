@@ -59,6 +59,47 @@
   });
   requestAnimationFrame(drawSky);
 
+  /* ---------- 45 smiling faces (one for every year) ---------- */
+  function placeFaces() {
+    const box = $("#faces");
+    const W = box.clientWidth;
+    const H = box.clientHeight;
+    const size = Math.max(30, Math.min(54, W * 0.085));
+    // keep the moon, title, tagline and button clear
+    const origin = box.getBoundingClientRect();
+    const pad = size * 0.7;
+    const keepClear = ["#welcome .moon", "#welcome .title", "#welcome .tagline", "#enter"].map((sel) => {
+      const r = $(sel).getBoundingClientRect();
+      return { l: r.left - origin.left - pad, r: r.right - origin.left + pad, t: r.top - origin.top - pad, b: r.bottom - origin.top + pad };
+    });
+    const inCenter = (x, y) => keepClear.some((c) => x > c.l && x < c.r && y > c.t && y < c.b);
+    let seed = 24; // fixed seed so the layout is the same on every visit
+    const rand = () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
+    const spots = [];
+    let minGap = size * 1.15;
+    for (let tries = 0; spots.length < 45 && tries < 20000; tries++) {
+      if (tries % 4000 === 3999) minGap *= 0.85; // loosen up on small screens
+      const x = size / 2 + rand() * (W - size);
+      const y = size / 2 + rand() * (H - size);
+      if (inCenter(x, y) || spots.some((p) => Math.hypot(p.x - x, p.y - y) < minGap)) continue;
+      spots.push({ x, y });
+    }
+    spots.forEach((p, i) => {
+      const img = document.createElement("img");
+      img.src = `assets/chibi/face-${i % 3 === 1 ? "laugh" : "smile"}.svg`;
+      img.alt = "";
+      img.className = "face";
+      img.style.left = `${(p.x / W) * 100}%`;
+      img.style.top = `${(p.y / H) * 100}%`;
+      img.style.setProperty("--size", `${Math.round(size * (0.8 + rand() * 0.4))}px`);
+      img.style.setProperty("--tilt", `${Math.round(rand() * 30 - 15)}deg`);
+      img.style.animationDelay = `${1.6 + i * 0.07}s, ${(rand() * 4).toFixed(2)}s`;
+      box.appendChild(img);
+    });
+  }
+  // wait for the fonts so the title has its final width
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(placeFaces);
+
   /* ---------- Confetti helpers ---------- */
   function confettiAt(el, opts = {}) {
     if (!window.confetti || reduceMotion) return;
@@ -163,7 +204,6 @@
       confettiAt(card);
       const lines = card.querySelectorAll(".line");
       window.MusicBox.play({
-        lang: card.dataset.song,
         onPhrase: (i) => lines.forEach((l, j) => l.classList.toggle("lit", i === j)),
         onEnd: () => {
           lines.forEach((l) => l.classList.remove("lit"));

@@ -1,5 +1,5 @@
 // All the site's sound, made with the Web Audio API (no audio files):
-// a music-box Happy Birthday with a sung voice, short sound effects, and a playful loop.
+// a music-box Happy Birthday, short sound effects, and a playful loop.
 (function () {
   const NOTE = {
     C3: 130.81, F3: 174.61, G3: 196.0, A3: 220.0, C4: 261.63, D4: 293.66, E4: 329.63, F4: 349.23,
@@ -14,26 +14,6 @@
     [["F5", 0.75], ["F5", 0.25], ["E5", 1], ["C5", 1], ["D5", 1], ["C5", 2.5]],
   ];
   const BEAT = 0.5; // seconds
-
-  // One syllable per note: [vowel, consonant]. Consonant: "h" breathy, "s" hiss, "p" stop, "" glide.
-  const HB = [["a", "h"], ["i", "p"], ["er", "p"], ["e", "p"], ["u", "p"], ["u", ""]];
-  const SYLLABLES = {
-    en: [HB, HB, [["a", "h"], ["i", "p"], ["er", "p"], ["e", "p"], ["i", "p"], ["a", ""], ["u", ""]], HB],
-    zh: (() => {
-      const line = [["u", "s"], ["i", ""], ["er", "s"], ["i", ""], ["a", "p"], ["er", ""]];
-      return [line, line, [...line, ["er", ""]], line];
-    })(),
-  };
-
-  // Formants (Hz) for a light, female-ish voice.
-  const VOWELS = {
-    a: [850, 1220, 2810],
-    e: [560, 2000, 2700],
-    i: [320, 2650, 3200],
-    u: [360, 900, 2600],
-    er: [500, 1450, 2550],
-  };
-  const FORMANT_GAIN = [1, 0.55, 0.25];
 
   let ctx = null;
   let master = null;
@@ -93,60 +73,6 @@
     [[1, 1], [2, 0.25], [3, 0.08]].forEach(([mult, amp]) => tone(freq * mult, start, { volume: volume * amp, decay: 1.4, out }));
   }
 
-  // A singing voice: two slightly detuned sawtooths with vibrato through vowel formant filters.
-  function createVoice(out, startAt) {
-    const input = ctx.createGain();
-    const oscs = [-7, 7].map((cents) => {
-      const o = ctx.createOscillator();
-      o.type = "sawtooth";
-      o.detune.value = cents;
-      o.connect(input);
-      return o;
-    });
-    const vibrato = ctx.createOscillator();
-    const vibratoDepth = ctx.createGain();
-    vibrato.frequency.value = 5.4;
-    vibratoDepth.gain.value = 0;
-    vibrato.connect(vibratoDepth);
-    oscs.forEach((o) => vibratoDepth.connect(o.detune));
-
-    const env = ctx.createGain();
-    env.gain.value = 0;
-    const filters = FORMANT_GAIN.map((g) => {
-      const f = ctx.createBiquadFilter();
-      f.type = "bandpass";
-      f.Q.value = 9;
-      const fg = ctx.createGain();
-      fg.gain.value = g * 3.2;
-      input.connect(f).connect(fg).connect(env);
-      return f;
-    });
-    env.connect(out);
-    oscs.forEach((o) => o.start(startAt));
-    vibrato.start(startAt);
-
-    return {
-      sing(freq, vowel, consonant, start, duration, volume) {
-        oscs.forEach((o) => o.frequency.setTargetAtTime(freq, start, 0.02));
-        VOWELS[vowel].forEach((hz, i) => filters[i].frequency.setTargetAtTime(hz, start, 0.03));
-        const g = env.gain;
-        g.setTargetAtTime(consonant === "p" || consonant === "s" ? 0.0001 : volume * 0.4, start - 0.03, 0.01);
-        g.setTargetAtTime(volume, start + (consonant === "s" ? 0.06 : 0.02), 0.03);
-        g.setTargetAtTime(volume * 0.75, start + duration * 0.6, duration * 0.3);
-        // vibrato blooms on long notes
-        vibratoDepth.gain.setTargetAtTime(0, start, 0.02);
-        vibratoDepth.gain.setTargetAtTime(duration > 0.6 ? 22 : 8, start + 0.2, 0.15);
-        if (consonant === "h") noise(start - 0.02, 0.09, { volume: volume * 0.25, freq: 1800, out });
-        if (consonant === "s") noise(start - 0.04, 0.11, { volume: volume * 0.35, freq: 5200, out });
-      },
-      end(at) {
-        env.gain.setTargetAtTime(0, at, 0.12);
-        oscs.forEach((o) => o.stop(at + 1));
-        vibrato.stop(at + 1);
-      },
-    };
-  }
-
   function stop() {
     if (!playing) return;
     playing.timers.forEach(clearTimeout);
@@ -156,8 +82,8 @@
     playing = null;
   }
 
-  // Happy Birthday. lang "en" | "zh" adds the sung voice; onPhrase(i) fires as each line starts.
-  function play({ volume = 0.35, lang = null, onPhrase, onEnd } = {}) {
+  // Happy Birthday; onPhrase(i) fires as each line starts.
+  function play({ volume = 0.35, onPhrase, onEnd } = {}) {
     if (!ensureContext()) {
       if (onEnd) onEnd();
       return;
@@ -168,22 +94,15 @@
     const timers = [];
     let t = ctx.currentTime + 0.12;
     const t0 = t;
-    const voice = lang ? createVoice(bus, t0 - 0.05) : null;
 
     PHRASES.forEach((phrase, i) => {
       const phraseStart = t;
       timers.push(setTimeout(() => onPhrase && onPhrase(i), (phraseStart - t0) * 1000));
-      phrase.forEach(([note, beats], j) => {
-        const duration = beats * BEAT;
-        musicBoxNote(NOTE[note], t, voice ? volume * 0.55 : volume, bus);
-        if (voice) {
-          const [vowel, consonant] = SYLLABLES[lang][i][j];
-          voice.sing(NOTE[note], vowel, consonant, t, duration, 0.22);
-        }
-        t += duration;
+      phrase.forEach(([note, beats]) => {
+        musicBoxNote(NOTE[note], t, volume, bus);
+        t += beats * BEAT;
       });
     });
-    if (voice) voice.end(t);
     timers.push(setTimeout(() => {
       if (playing && playing.bus === bus) playing = null;
       if (onEnd) onEnd();
