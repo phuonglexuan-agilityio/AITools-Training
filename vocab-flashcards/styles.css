@@ -202,7 +202,20 @@ input[type="checkbox"] { padding: 0; width: 16px; height: 16px; accent-color: va
 #bar-fill { height: 100%; width: 0; background: var(--ok-strong); border-radius: 999px; transition: width 0.25s; }
 
 /* ---------- Flashcard ---------- */
-.card-wrap { perspective: 1400px; margin: 16px 0 20px; }
+.card-wrap { position: relative; perspective: 1400px; margin: 16px 0 20px; }
+.card-speak {
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
+  z-index: 1;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 999px;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+.card-speak[hidden] { display: none; }
 .card {
   display: block;
   width: 100%;
@@ -258,6 +271,10 @@ input[type="checkbox"] { padding: 0; width: 16px; height: 16px; accent-color: va
 .main-text { font-size: 2.4rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; margin: 0; overflow-wrap: anywhere; }
 .face.back .main-text { font-size: 1.6rem; font-weight: 600; letter-spacing: -0.01em; }
 .sub-text { color: var(--muted); font-size: 1.05rem; margin: 8px 0 0; }
+.sub-text.pron {
+  font-family: "Charis SIL", "Doulos SIL", "Gentium Plus", "Noto Sans", "Lucida Sans Unicode", "Segoe UI", system-ui, sans-serif;
+  font-size: 1.2rem;
+}
 .sub-text:empty, .vi-text:empty, .example:empty { display: none; }
 .vi-text { margin: 12px 0 0; font-size: 1.1rem; font-weight: 500; color: var(--primary); }
 .example {

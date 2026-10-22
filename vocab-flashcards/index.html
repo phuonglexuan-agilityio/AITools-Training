@@ -55,18 +55,19 @@
             <div class="face front">
               <span class="face-label" id="front-label">Word</span>
               <p id="front-text" class="main-text"></p>
-              <p id="front-sub" class="sub-text"></p>
+              <p id="front-sub" class="sub-text pron"></p>
               <span class="hint">Click or press Space to flip</span>
             </div>
             <div class="face back">
               <span class="face-label" id="back-label">Meaning</span>
               <p id="back-text" class="main-text"></p>
-              <p id="back-sub" class="sub-text"></p>
+              <p id="back-sub" class="sub-text pron"></p>
               <p id="back-extra" class="vi-text"></p>
               <p id="back-example" class="example"></p>
             </div>
           </div>
         </button>
+        <button id="speak" class="btn ghost card-speak" type="button" title="Hear the word (S)" aria-label="Hear the word">🔊</button>
       </div>
 
       <div class="controls">
@@ -75,7 +76,7 @@
         <button id="mark-known" class="btn ok" title="I know it (2)">I know it</button>
         <button id="next" class="btn ghost" title="Next (→)">Next →</button>
       </div>
-      <p class="shortcuts"><kbd>Space</kbd> flip · <kbd>←</kbd> <kbd>→</kbd> navigate · <kbd>1</kbd> still learning · <kbd>2</kbd> known</p>
+      <p class="shortcuts"><kbd>Space</kbd> flip · <kbd>←</kbd> <kbd>→</kbd> navigate · <kbd>1</kbd> still learning · <kbd>2</kbd> known · <kbd>S</kbd> hear the word</p>
     </section>
 
     <!-- IPA practice view (Phase 1) -->
@@ -158,7 +159,7 @@
         <input type="hidden" id="edit-id">
         <div class="grid">
           <label>Word *<input id="f-word" required maxlength="100"></label>
-          <label>Pronunciation / type<input id="f-sub" maxlength="100" placeholder="e.g. /ɪˈfem.ər.əl/ (adj)"></label>
+          <label>Pronunciation (IPA) / type<input id="f-sub" class="ipa" maxlength="100" placeholder="e.g. /ɪˈfem.ər.əl/ (adj)"></label>
           <label>Meaning (English) *<input id="f-meaning" required maxlength="300"></label>
           <label>Vietnamese meaning<input id="f-vi" lang="vi" maxlength="300" placeholder="e.g. phù du, chóng tàn"></label>
           <label class="full">Example sentence<textarea id="f-example" rows="2" maxlength="500"></textarea></label>
@@ -197,6 +198,7 @@
   </div>
 
   <script src="confirm-dialog.js"></script>
+  <script src="speech.js"></script>
   <script src="app.js"></script>
   <script src="ipa-data.js"></script>
   <script src="ipa.js"></script>

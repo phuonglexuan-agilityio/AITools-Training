@@ -26,6 +26,7 @@
     emptyStudy: $('empty-study'), cardWrap: $('card-wrap'), card: $('card'),
     frontLabel: $('front-label'), frontText: $('front-text'), frontSub: $('front-sub'),
     backLabel: $('back-label'), backText: $('back-text'), backSub: $('back-sub'), backExtra: $('back-extra'), backExample: $('back-example'),
+    speakBtn: $('speak'),
     prev: $('prev'), next: $('next'), markKnown: $('mark-known'), markLearning: $('mark-learning'),
     form: $('word-form'), formTitle: $('form-title'), editId: $('edit-id'),
     fWord: $('f-word'), fSub: $('f-sub'), fMeaning: $('f-meaning'), fVi: $('f-vi'), fExample: $('f-example'),
@@ -115,6 +116,8 @@
 
     el.card.classList.remove('flipped');
     el.card.classList.toggle('known', w.known);
+    el.speakBtn.title = `Hear "${w.word}" (S)`;
+    el.speakBtn.setAttribute('aria-label', `Hear ${w.word}`);
 
     // Front shows the chosen side; the back shows the rest. A word with no
     // Vietnamese meaning falls back to the English meaning on a Vietnamese front.
@@ -138,10 +141,30 @@
     el.backExtra.textContent = extra ? `${extra.label}: ${extra.text}` : '';
     el.backExtra.lang = extra ? extra.lang : '';
     el.backExample.textContent = w.example ? `“${w.example}”` : '';
+    updateSpeak();
+  }
+
+  // The speaker shows only while the word's face is up, so it never gives the
+  // answer away on a meaning-first card.
+  function wordFaceUp() {
+    const wordFront = el.frontMode.value === 'word';
+    return wordFront !== el.card.classList.contains('flipped');
+  }
+
+  function updateSpeak() {
+    el.speakBtn.hidden = !current() || !wordFaceUp();
+    el.speakBtn.disabled = !window.speech.canSpeak;
+  }
+
+  function speakCurrent() {
+    const w = current();
+    if (w && wordFaceUp()) window.speech.speak(w.word);
   }
 
   function flip() {
-    if (current()) el.card.classList.toggle('flipped');
+    if (!current()) return;
+    el.card.classList.toggle('flipped');
+    updateSpeak();
   }
 
   function go(delta) {
@@ -380,6 +403,7 @@
   // ---------- Events ----------
   el.tabs.forEach((t) => t.addEventListener('click', () => switchView(t.dataset.view)));
   el.card.addEventListener('click', flip);
+  el.speakBtn.addEventListener('click', speakCurrent);
   el.prev.addEventListener('click', () => go(-1));
   el.next.addEventListener('click', () => go(1));
   el.markKnown.addEventListener('click', () => mark(true));
@@ -420,6 +444,7 @@
       case 'ArrowRight': go(1); break;
       case '1': mark(false); break;
       case '2': mark(true); break;
+      case 's': case 'S': speakCurrent(); break;
       default: break;
     }
   });
