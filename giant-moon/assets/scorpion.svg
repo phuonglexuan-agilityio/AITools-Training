@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <g stroke="#6c5ca8" stroke-width="4" stroke-linecap="round" fill="none">
+    <!-- legs -->
+    <path d="M70 150 L52 162 M74 160 L58 176 M126 160 L142 176 M130 150 L148 162"/>
+    <!-- arms -->
+    <path d="M72 126 Q52 122 42 104 M128 126 Q148 122 158 104"/>
+  </g>
+  <!-- tail -->
+  <g fill="#b9a7e8" stroke="#6c5ca8" stroke-width="3.5">
+    <circle cx="100" cy="82" r="20"/>
+    <circle cx="114" cy="56" r="16"/>
+    <circle cx="134" cy="40" r="13"/>
+    <circle cx="154" cy="38" r="11"/>
+  </g>
+  <!-- heart stinger -->
+  <path d="M168 56 C152 46 156 30 166 36 C174 28 186 40 168 56 Z" fill="#ffb38a" stroke="#e98a5f" stroke-width="3"/>
+  <!-- claws -->
+  <g fill="#b9a7e8" stroke="#6c5ca8" stroke-width="3.5">
+    <path d="M42 104 C22 104 18 80 32 72 L40 86 L48 76 C58 86 54 104 42 104 Z"/>
+    <path d="M158 104 C178 104 182 80 168 72 L160 86 L152 76 C142 86 146 104 158 104 Z"/>
+  </g>
+  <!-- body / head -->
+  <ellipse cx="100" cy="128" rx="38" ry="34" fill="#c9baf0" stroke="#6c5ca8" stroke-width="4"/>
+  <!-- eyes -->
+  <ellipse cx="87" cy="124" rx="6" ry="8" fill="#2a1d1a"/>
+  <ellipse cx="113" cy="124" rx="6" ry="8" fill="#2a1d1a"/>
+  <circle cx="89" cy="120" r="2.5" fill="#fff"/>
+  <circle cx="115" cy="120" r="2.5" fill="#fff"/>
+  <!-- little round glasses, like hers -->
+  <g fill="#fff" fill-opacity="0.15" stroke="#3d3346" stroke-width="2.5">
+    <circle cx="87" cy="124" r="12"/>
+    <circle cx="113" cy="124" r="12"/>
+  </g>
+  <path d="M99 123 L101 123" stroke="#3d3346" stroke-width="2.5"/>
+  <!-- blush + smile -->
+  <ellipse cx="74" cy="140" rx="7" ry="4" fill="#ff9e9e" opacity="0.7"/>
+  <ellipse cx="126" cy="140" rx="7" ry="4" fill="#ff9e9e" opacity="0.7"/>
+  <path d="M93 142 Q100 149 107 142" stroke="#6c5ca8" stroke-width="3" fill="none" stroke-linecap="round"/>
+</svg>
