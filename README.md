@@ -7,3 +7,6 @@ Claude/Cowork as the BA/QA environment.
   Vietnamese meanings and IPA pronunciation practice. Plain HTML/CSS/JS, no
   build step. See its [README](vocab-flashcards/README.md) for how to run it,
   features, project structure, tests and how to contribute.
+- [`giant-moon/`](giant-moon/) — "Giant Moon's Universe", a single-page birthday
+  website deployed to Netlify. Plain HTML/CSS/JS, no build step. See its
+  [README](giant-moon/README.md).

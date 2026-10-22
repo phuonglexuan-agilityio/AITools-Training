@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Giant Moon's Universe</title>
+  <meta name="description" content="A little universe, made just for you.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0b1026">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Giant Moon's Universe 🌙">
+  <meta property="og:description" content="A little universe, made just for you.">
+  <meta property="og:image" content="https://giantmoon.netlify.app/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="locked">
+  <canvas id="sky" aria-hidden="true"></canvas>
+
+  <nav class="dots" aria-label="Sections">
+    <a href="#welcome" aria-label="Welcome"></a>
+    <a href="#songs" aria-label="Birthday songs"></a>
+    <a href="#personality" aria-label="Personality"></a>
+    <a href="#paradox" aria-label="Gym-Food Paradox"></a>
+    <a href="#wish" aria-label="A wish just for you"></a>
+  </nav>
+
+  <button class="mute" id="mute" type="button" aria-label="Mute sound" aria-pressed="false">🔊</button>
+
+  <main>
+    <!-- 1. Welcome -->
+    <section id="welcome" class="panel">
+      <div class="moon moon-big" aria-hidden="true"><span class="crater c1"></span><span class="crater c2"></span><span class="crater c3"></span></div>
+      <h1 class="title fade-in">GIANT MOON</h1>
+      <p class="tagline fade-in delay-1">A little universe, made just for you.</p>
+      <button class="btn btn-glow fade-in delay-2" id="enter" type="button">Enter Your Universe ✨</button>
+    </section>
+
+    <!-- 2. Birthday songs -->
+    <section id="songs" class="panel gated">
+      <div class="moon moon-small" aria-hidden="true"></div>
+      <h2 class="reveal">Happy Birthday, Giant Moon</h2>
+      <p class="hint reveal">Tap a card to sing 🎶</p>
+      <div class="cards">
+        <button class="song-card reveal" data-song="en" type="button" aria-expanded="false">
+          <span class="card-face card-front"><span class="card-flag">English</span><span class="card-sub">tap to open</span></span>
+          <span class="card-face card-back">
+            <span class="line">Happy birthday to you</span>
+            <span class="line">Happy birthday to you</span>
+            <span class="line">Happy birthday, dear Giant Moon</span>
+            <span class="line">Happy birthday to you</span>
+          </span>
+        </button>
+        <button class="song-card reveal" data-song="zh" type="button" aria-expanded="false">
+          <span class="card-face card-front"><span class="card-flag">中文</span><span class="card-sub">tap to open</span></span>
+          <span class="card-face card-back">
+            <span class="line">祝你生日快乐<small>Zhù nǐ shēngrì kuàilè</small></span>
+            <span class="line">祝你生日快乐<small>Zhù nǐ shēngrì kuàilè</small></span>
+            <span class="line">祝你生日快乐<small>Zhù nǐ shēngrì kuàilè</small></span>
+            <span class="line">祝你生日快乐<small>Zhù nǐ shēngrì kuàilè</small></span>
+          </span>
+        </button>
+      </div>
+    </section>
+
+    <!-- 3. Personality -->
+    <section id="personality" class="panel gated">
+      <h2 class="reveal">The Giant Moon Personality</h2>
+      <p class="badge reveal">♏ Scorpio · Water element</p>
+      <div class="constellation reveal">
+        <svg class="links" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <polyline points="22,22 74,30 66,74 28,68 22,22"/>
+        </svg>
+        <button class="star" style="left:22%;top:22%" type="button" data-text="Being around you feels like cool water on a warm night: quiet, steady, peaceful." data-title="🌊 Cool &amp; Calm"><span>🌊</span></button>
+        <button class="star" style="left:74%;top:30%" type="button" data-text="There is a whole inner universe in you that not everyone gets to see." data-title="🌌 Deep &amp; Mysterious"><span>🌌</span></button>
+        <button class="star" style="left:66%;top:74%" type="button" data-text="You are patient, kind and gentle with everyone, even on the hard days." data-title="🪷 Patient &amp; Kind"><span>🪷</span></button>
+        <button class="star" style="left:28%;top:68%" type="button" data-text="No noise, no show. Just showing up for work, training and life, again and again." data-title="🔥 Quietly Disciplined"><span>🔥</span></button>
+      </div>
+      <p class="hint" id="star-hint">Tap a star ✦</p>
+      <div class="trait-card" id="trait-card" role="status" aria-live="polite" hidden>
+        <strong id="trait-title"></strong>
+        <p id="trait-text"></p>
+      </div>
+    </section>
+
+    <!-- 4. Gym-Food Paradox -->
+    <section id="paradox" class="panel gated">
+      <h2 class="reveal">The Gym-Food Paradox</h2>
+      <button class="chibi reveal" id="chibi" type="button" aria-label="Giant Moon chibi. Tap her!">
+        <img src="assets/chibi/lift.svg" alt="" class="frame is-on" data-pose="lift" width="300" height="360">
+        <img src="assets/chibi/drink.svg" alt="" class="frame" data-pose="drink" width="300" height="360">
+        <img src="assets/chibi/spot.svg" alt="" class="frame" data-pose="spot" width="300" height="360">
+        <img src="assets/chibi/sparkle.svg" alt="" class="frame" data-pose="sparkle" width="300" height="360">
+        <img src="assets/chibi/hug.svg" alt="" class="frame" data-pose="hug" width="300" height="360">
+        <img src="assets/chibi/wink.svg" alt="" class="frame" data-pose="wink" width="300" height="360">
+        <span class="food" aria-hidden="true">🍔</span>
+      </button>
+      <p class="hint">Tap her 💪</p>
+      <p class="slogan" id="slogan" aria-live="polite">Discipline in the gym. Loyalty to food.</p>
+    </section>
+
+    <!-- 5. A wish just for you -->
+    <section id="wish" class="panel gated">
+      <div class="moon moon-small" aria-hidden="true"></div>
+      <h2 class="reveal">A Wish Just for You</h2>
+      <div class="envelope reveal" id="envelope">
+        <div class="env-back"></div>
+        <div class="env-front"></div>
+        <div class="env-flap"></div>
+        <div class="env-seal" aria-hidden="true">🌙</div>
+      </div>
+      <button class="btn btn-glow" id="open-letter" type="button">Open your letter 💌</button>
+      <div class="letter" id="letter" hidden>
+        <p class="l">To my Giant Moon,</p>
+        <p class="l">Another year around the sun, and you still shine like the moon: quietly, softly, and somehow always there when the night gets dark.</p>
+        <p class="l">May you always have the strength to chase your goals, the patience to grow at your own pace, and enough good food to make every day a little happier.</p>
+        <p class="l">Thank you for being the friend who listens more than she talks, who works hard without asking for applause, and who never says no to dessert.</p>
+        <p class="l">Keep being the calm, kind, and quietly extraordinary person you are.</p>
+        <p class="l">Happy Birthday, Giant Moon. May your universe always be kind to you. 🌙</p>
+        <p class="l sign">With love,<br>Phuong Le</p>
+      </div>
+
+      <div class="finale" id="finale" hidden>
+        <p class="finale-text">The world is a little better with you in it.</p>
+        <button class="btn btn-glow" id="fireworks" type="button">Light up the sky again 🎆</button>
+      </div>
+
+      <footer class="footer">Made with love by Phuong Le · October 24, 2026</footer>
+    </section>
+  </main>
+
+  <script src="vendor/confetti.browser.js" defer></script>
+  <script src="music.js" defer></script>
+  <script src="main.js" defer></script>
+</body>
+</html>
