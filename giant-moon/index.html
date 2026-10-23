@@ -27,7 +27,7 @@
 
   <nav class="dots" aria-label="Sections">
     <a href="#welcome" aria-label="Welcome"></a>
-    <a href="#songs" aria-label="Birthday songs"></a>
+    <a href="#songs" aria-label="Birthday song"></a>
     <a href="#personality" aria-label="Personality"></a>
     <a href="#paradox" aria-label="Gym-Food Paradox"></a>
     <a href="#wish" aria-label="A wish just for you"></a>
@@ -46,31 +46,27 @@
       <button class="btn btn-glow fade-in delay-2" id="enter" type="button">Enter Your Universe ✨</button>
     </section>
 
-    <!-- 2. Birthday songs -->
+    <!-- 2. Birthday song -->
     <section id="songs" class="panel gated">
-      <div class="moon moon-small" aria-hidden="true"></div>
       <h2 class="reveal">Happy Birthday, Giant Moon</h2>
-      <p class="hint reveal">Tap a card to sing 🎶</p>
-      <div class="cards">
-        <button class="song-card reveal" data-song="en" type="button" aria-expanded="false">
-          <span class="card-face card-front"><span class="card-flag">English</span><span class="card-sub">tap to open</span></span>
-          <span class="card-face card-back">
-            <span class="line">Happy birthday to you</span>
-            <span class="line">Happy birthday to you</span>
-            <span class="line">Happy birthday, dear Giant Moon</span>
-            <span class="line">Happy birthday to you</span>
-          </span>
-        </button>
-        <button class="song-card reveal" data-song="zh" type="button" aria-expanded="false">
-          <span class="card-face card-front"><span class="card-flag">中文</span><span class="card-sub">tap to open</span></span>
-          <span class="card-face card-back">
-            <span class="line">祝你生日快乐<small>Zhù nǐ shēngrì kuàilè</small></span>
-            <span class="line">祝你生日快乐<small>Zhù nǐ shēngrì kuàilè</small></span>
-            <span class="line">祝你生日快乐<small>Zhù nǐ shēngrì kuàilè</small></span>
-            <span class="line">祝你生日快乐<small>Zhù nǐ shēngrì kuàilè</small></span>
-          </span>
-        </button>
+      <div class="dance-stage reveal" aria-hidden="true">
+        <div class="dancer" id="dancer">
+          <img src="assets/chibi/wink.svg" alt="" class="frame is-on" data-pose="wink" width="300" height="360">
+          <img src="assets/chibi/sparkle.svg" alt="" class="frame" data-pose="sparkle" width="300" height="360">
+          <img src="assets/chibi/hug.svg" alt="" class="frame" data-pose="hug" width="300" height="360">
+        </div>
+        <div class="notes" id="notes"></div>
       </div>
+      <button class="song-card reveal" data-song="en" type="button" aria-expanded="false">
+        <span class="card-face card-front"><span class="card-flag">Sing along 🎶</span><span class="card-sub">tap to play</span></span>
+        <span class="card-face card-back">
+          <span class="line">Happy birthday to you</span>
+          <span class="line">Happy birthday to you</span>
+          <span class="line">Happy birthday, dear Giant Moon</span>
+          <span class="line">Happy birthday to you</span>
+        </span>
+      </button>
+      <button class="next" type="button" data-next="#personality" aria-label="Next section">⌄</button>
     </section>
 
     <!-- 3. Personality -->
@@ -94,6 +90,7 @@
         <strong id="trait-title"></strong>
         <p id="trait-text"></p>
       </div>
+      <button class="next" type="button" data-next="#paradox" aria-label="Next section">⌄</button>
     </section>
 
     <!-- 4. Gym-Food Paradox -->
@@ -112,6 +109,7 @@
       </div>
       <p class="hint">Tap the chibi 💪</p>
       <p class="slogan" id="slogan" aria-live="polite">Discipline in the gym. Loyalty to food.</p>
+      <button class="next" type="button" data-next="#wish" aria-label="Next section">⌄</button>
     </section>
 
     <!-- 5. A wish just for you -->
@@ -138,9 +136,9 @@
       <div class="finale" id="finale" hidden>
         <p class="finale-text">The world is a little better with you in it.</p>
         <button class="btn btn-glow" id="fireworks" type="button">Light up the sky again 🎆</button>
+        <footer class="footer">Made with love by Phuong Le · October 24, 2026</footer>
       </div>
 
-      <footer class="footer">Made with love by Phuong Le · October 24, 2026</footer>
     </section>
   </main>
 

@@ -115,7 +115,8 @@
 
 
   // Happy Birthday; onPhrase(i) fires as each line starts.
-  function play({ volume = 0.35, onPhrase, onEnd } = {}) {
+  // onPhrase(i) fires as each line starts, onNote(beats) on every note (for the dancing chibi).
+  function play({ volume = 0.35, onPhrase, onNote, onEnd } = {}) {
     stop();
     // Lyric timing runs on plain timers, so the words still light up even if audio fails.
     const timers = [];
@@ -123,7 +124,11 @@
     PHRASES.forEach((phrase, i) => {
       const at = beats * BEAT * 1000 + 120;
       timers.push(setTimeout(() => onPhrase && onPhrase(i), at));
-      phrase.forEach(([, b]) => (beats += b));
+      phrase.forEach(([, b]) => {
+        const noteAt = beats * BEAT * 1000 + 120;
+        timers.push(setTimeout(() => onNote && onNote(b), noteAt));
+        beats += b;
+      });
     });
     timers.push(setTimeout(() => {
       if (playing && playing.timers === timers) playing = null;
