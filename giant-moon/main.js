@@ -207,6 +207,11 @@
   const dots = $$(".dots a");
   const sectionObserver = new IntersectionObserver((entries) => {
     entries.forEach((e) => {
+      // Happy Birthday starts by itself when she reaches the letter section, and fades out if she leaves
+      if (e.target.id === "wish" && !document.body.classList.contains("locked")) {
+        if (e.isIntersecting) window.MusicBox.play({ volume: 0.3 });
+        else window.MusicBox.stop();
+      }
       if (e.target.id === "paradox") {
         if (e.isIntersecting) {
           startChibi();
