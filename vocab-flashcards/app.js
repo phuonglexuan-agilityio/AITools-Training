@@ -3,6 +3,9 @@
 
   const STORAGE_KEY = 'vocab-flashcards.v1';
 
+  const WORD_LIST = window.WORD_LIST || { topics: [] };
+  const NO_TOPIC = 'my-words';
+
   const SAMPLE_WORDS = [
     { word: 'ephemeral', vi: 'phù du, chóng tàn', sub: '/ɪˈfem.ər.əl/ (adj)', meaning: 'Lasting for a very short time', example: 'Fame in the age of social media is often ephemeral.' },
     { word: 'meticulous', vi: 'tỉ mỉ, kỹ lưỡng', sub: '/məˈtɪk.jə.ləs/ (adj)', meaning: 'Showing great attention to detail; very careful and precise', example: 'She kept meticulous records of every test case.' },
@@ -22,6 +25,7 @@
   const el = {
     tabs: document.querySelectorAll('.tab'),
     filter: $('filter'), frontMode: $('front-mode'), shuffle: $('shuffle'),
+    topicField: $('topic-field'), topic: $('topic'), addList: $('add-list'),
     position: $('position'), barFill: $('bar-fill'), knownCount: $('known-count'),
     emptyStudy: $('empty-study'), cardWrap: $('card-wrap'), card: $('card'),
     frontLabel: $('front-label'), frontText: $('front-text'), frontSub: $('front-sub'),
@@ -42,6 +46,7 @@
   }
 
   function normalize(w) {
+    const topic = String(w.topic || '').trim();
     return {
       id: w.id || uid(),
       word: String(w.word || '').trim(),
@@ -50,7 +55,15 @@
       example: String(w.example || '').trim(),
       vi: String(w.vi || '').trim(),
       known: Boolean(w.known),
+      // Only words from a built-in list have a topic; it's left out otherwise.
+      ...(topic ? { topic } : {}),
     };
+  }
+
+  // The built-in list (wordlists-data.js) as deck words.
+  function listWords() {
+    return WORD_LIST.topics.flatMap((t) => t.words.map(([word, ipa, pos, meaning, vi, example]) =>
+      normalize({ word, sub: `/${ipa}/ (${pos})`, meaning, vi, example, topic: t.label })));
   }
 
   function load() {
@@ -75,9 +88,47 @@
   // ---------- Study ----------
   function filteredIds() {
     const f = el.filter.value;
+    const t = el.topic.value;
     return words
       .filter((w) => f === 'all' || (f === 'known' ? w.known : !w.known))
+      .filter((w) => t === 'all' || (w.topic || NO_TOPIC) === t)
       .map((w) => w.id);
+  }
+
+  // Topic choices follow the built-in list's order; words without a topic
+  // (your own and the sample deck) are grouped as "My words".
+  function renderTopics() {
+    const present = new Set(words.map((w) => w.topic || NO_TOPIC));
+    const labels = WORD_LIST.topics.map((t) => t.label).filter((l) => present.has(l));
+    words.forEach((w) => { if (w.topic && !labels.includes(w.topic)) labels.push(w.topic); });
+    const options = [['all', 'All topics'], ...labels.map((l) => [l, l])];
+    if (labels.length && present.has(NO_TOPIC)) options.push([NO_TOPIC, 'My words']);
+
+    const selected = el.topic.value;
+    el.topic.replaceChildren(...options.map(([value, label]) => {
+      const o = document.createElement('option');
+      o.value = value;
+      o.textContent = label;
+      return o;
+    }));
+    el.topic.value = options.some(([v]) => v === selected) ? selected : 'all';
+    el.topicField.hidden = labels.length === 0;
+
+    // The add button stays until every word of the list is in the deck.
+    const have = new Set(words.map((w) => w.word.toLowerCase()));
+    el.addList.hidden = !listWords().some((w) => !have.has(w.word.toLowerCase()));
+  }
+
+  function addWordList() {
+    const have = new Set(words.map((w) => w.word.toLowerCase()));
+    const fresh = listWords().filter((w) => !have.has(w.word.toLowerCase()));
+    words.push(...fresh);
+    save();
+    renderTopics();
+    index = 0;
+    buildOrder(false);
+    renderList();
+    toast(`Added ${fresh.length} words`);
   }
 
   function shuffleArray(arr) {
@@ -397,7 +448,10 @@
   function switchView(name) {
     el.tabs.forEach((t) => t.classList.toggle('active', t.dataset.view === name));
     document.querySelectorAll('.view').forEach((v) => v.classList.toggle('active', v.id === `view-${name}`));
-    if (name === 'study') buildOrder();
+    if (name === 'study') {
+      renderTopics();
+      buildOrder();
+    }
   }
 
   // ---------- Events ----------
@@ -410,6 +464,8 @@
   el.markLearning.addEventListener('click', () => mark(false));
   el.filter.addEventListener('change', () => { index = 0; buildOrder(false); });
   el.frontMode.addEventListener('change', renderCard);
+  el.topic.addEventListener('change', () => { index = 0; buildOrder(false); });
+  el.addList.addEventListener('click', addWordList);
   el.shuffle.addEventListener('click', () => {
     shuffled = true;
     index = 0;
@@ -451,6 +507,7 @@
 
   // ---------- Init ----------
   save();
+  renderTopics();
   buildOrder(false);
   renderList();
 })();
