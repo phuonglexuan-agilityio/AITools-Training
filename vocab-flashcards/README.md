@@ -60,6 +60,19 @@ add the built-in work word list.
   meaning and a work example. One click in Study adds it to your deck (words
   you already have are skipped), and the **Topic** filter studies one topic at
   a time; your own words show under *My words*.
+- **Speaking** — 72 ready-made work phrases for *Meetings*, *Client calls*
+  and *Demos*, in American English, to practise pronunciation, intonation and
+  collocations out loud:
+  - Stressed syllables are **bold**, a bar marks a short pause between
+    thought groups, and ↗ / ↘ show where the voice rises or falls.
+  - Each phrase has its Vietnamese meaning (can be hidden), the *key phrase*
+    (collocation) worth reusing, and for many a 💡 tip on sounds Vietnamese
+    speakers often find hard (final consonants, /θ ð/, /ʃ/, stress).
+  - **Listen** slowly or at normal speed, **Shadow** (hear it three times,
+    with a pause after each to repeat it), then **Record** yourself and
+    **Compare** (the model voice, then yours).
+  - Mark phrases *Need practice* or *Confident*, filter by situation or
+    status, and shuffle.
 - **IPA practice (Phase 1)** — learn the 44 sounds of British English (RP)
   through 132 example words (3 per sound):
   - *Sound chart* — every IPA symbol grouped into short vowels, long vowels,
@@ -92,7 +105,7 @@ add the built-in work word list.
 
 ## How to use it
 
-The app has three tabs.
+The app has four tabs.
 
 ### Study
 
@@ -109,6 +122,19 @@ The app has three tabs.
    use **Topic** to study one topic (for example *Business analysis*). The
    button disappears once every word of the list is in your deck, and comes
    back after **Reset**.
+
+### Speaking
+
+1. Pick a **Situation** (meetings, client calls, demos) or keep *All*.
+2. Read the phrase. Bold syllables are stressed, the bars are short pauses
+   and the arrows show the tone at the end.
+3. **Listen**: *Slow* first, then *Normal*.
+4. **Shadow**: press *Repeat after it ×3* and say the phrase in each pause.
+5. **Record**: press *Record*, say the phrase, press *Stop*. *My voice* plays
+   it back; *Compare* plays the model and then you. The browser asks for the
+   microphone the first time. Recordings are kept only until you reload or
+   close the tab, and are never uploaded.
+6. Press **Need practice** or **Confident** to move on.
 
 ### IPA practice
 
@@ -145,6 +171,12 @@ Transcriptions use British English (RP).
 | Study | 1 | Mark *Still learning* |
 | Study | 2 | Mark *I know it* |
 | Study | S | Hear the word (when the word's face is up) |
+| Speaking | S / D | Listen at normal / slow speed |
+| Speaking | H | Shadow (hear it 3 times and repeat) |
+| Speaking | R | Record / stop |
+| Speaking | P / C | Play my recording / compare with the model |
+| Speaking | ← / → | Previous / next phrase |
+| Speaking | 1 / 2 | Mark *Need practice* / *Confident* |
 | IPA flashcards | Space / Enter | Flip card |
 | IPA flashcards | ← / → | Previous / next card |
 | IPA flashcards | S | Hear the word |
@@ -213,6 +245,10 @@ All data stays in your browser's `localStorage`; nothing is sent to a server.
 | --- | --- |
 | `vocab-flashcards.v1` | Your word deck, including which words are known |
 | `vocab-flashcards.ipa-stats.v1` | IPA quiz accuracy per sound |
+| `vocab-flashcards.speaking.v1` | Which work phrases you marked *Confident* |
+
+Speaking recordings are not stored: they stay in memory until you reload or
+close the tab.
 
 This means your words are tied to one browser on one device. Use **Export** to
 back them up or move them to another browser, and **Import** to load them
@@ -222,13 +258,15 @@ there. Clearing site data for the page also clears your deck.
 
 ```text
 vocab-flashcards/
-├── index.html            # Page markup: header tabs, the three views, toast and confirm box
+├── index.html            # Page markup: header tabs, the four views, toast and confirm box
 ├── styles.css            # All styling, including responsive layout and dark mode
 ├── wordlists-data.js     # Built-in 500-word BA, software & AI list (American IPA)
 ├── app.js                # Study + Manage words: deck state, storage, import/export
 ├── ipa-data.js           # IPA deck: 44 sounds, groups, tips and example words
 ├── ipa.js                # IPA practice view: sound chart, flashcards, quiz, audio
-├── speech.js             # Speaks words with the browser's voice (Study and IPA)
+├── phrases-data.js       # Work phrases for the Speaking tab, plus markup helpers
+├── speaking.js           # Speaking view: listen, shadow, record and compare
+├── speech.js             # Speaks text with the browser's voice (all tabs)
 ├── confirm-dialog.js     # In-page replacement for window.confirm()
 ├── package.json          # Test scripts and the Playwright dev dependency
 ├── package-lock.json
@@ -237,12 +275,14 @@ vocab-flashcards/
 └── tests/
     ├── unit/
     │   ├── ipa-data.test.js       # Checks the IPA deck data
-    │   └── wordlists-data.test.js # Checks the built-in word list
+    │   ├── wordlists-data.test.js # Checks the built-in word list
+    │   └── phrases-data.test.js   # Checks the work phrases and their markup
     └── e2e/
         ├── fixtures.js            # Opens the app and fails on page errors or native dialogs
         ├── study.spec.js          # Study tab
         ├── manage.spec.js         # Manage words tab
         ├── ipa.spec.js            # IPA practice tab
+        ├── speaking.spec.js       # Speaking tab
         ├── wordlist.spec.js       # Built-in word list and Topic filter
         └── confirm-dialog.spec.js # In-page confirm box
 ```
@@ -250,13 +290,16 @@ vocab-flashcards/
 ## How the code fits together
 
 - Each script is a self-contained IIFE loaded with a plain `<script>` tag in
-  `index.html`, in this order: `confirm-dialog.js`, `speech.js`, `wordlists-data.js`, `app.js`,
-  `ipa-data.js`, `ipa.js`. There are no modules or bundler.
+  `index.html`, in this order: `confirm-dialog.js`, `speech.js`,
+  `wordlists-data.js`, `app.js`, `ipa-data.js`, `ipa.js`, `phrases-data.js`,
+  `speaking.js`. There are no modules or bundler.
 - `confirm-dialog.js` exposes `window.askConfirm(message, okLabel)`, which the
   other scripts `await`; it resolves `true` for OK and `false` for Cancel, Escape or a click
   on the backdrop.
-- `speech.js` exposes `window.speech = { canSpeak, speak(text) }`, which uses
-  `speechSynthesis` with a British English voice when one is installed.
+- `speech.js` exposes `window.speech = { canSpeak, speak(text, options), stop() }`,
+  which uses `speechSynthesis`. Options are `lang` (default `en-US`), `rate`
+  and an `onend` callback. IPA practice asks for `en-GB` to match its RP
+  transcriptions; Study and Speaking use American English.
 - `app.js` owns the word deck. Every word is normalised to
   `{ id, word, sub, meaning, example, vi, known }` (plus `topic` for words
   from the built-in list) and the whole list is saved to `localStorage` after
@@ -272,6 +315,14 @@ vocab-flashcards/
   sound.
 - `ipa.js` reads that data, renders the IPA tab and saves quiz accuracy under
   its own storage key.
+- `phrases-data.js` defines `window.PHRASE_SITUATIONS`, `window.PHRASES` and
+  `window.PHRASE_MARKUP`. A phrase is `{ id, sit, text, chunk, vi, tip? }`;
+  `text` marks stress as `*dash*board`, pauses as `|` and tone as `↗` / `↘`.
+  `PHRASE_MARKUP.plain(text)` gives the sentence to speak and
+  `PHRASE_MARKUP.groups(text)` the parts to render.
+- `speaking.js` renders the Speaking tab, records with `MediaRecorder` (kept
+  in memory as object URLs, one per phrase) and saves the *Confident* phrase
+  ids under `vocab-flashcards.speaking.v1`.
 
 ## Tests
 
@@ -338,9 +389,14 @@ characters (for example `ɡ`, not `g`), and include a Vietnamese meaning. Run
 
 ## Troubleshooting
 
-- **No sound in Study or IPA practice**: audio uses your browser's speech voices. Check
+- **No sound in Study, Speaking or IPA practice**: audio uses your browser's speech voices. Check
   that your system has an English voice installed and that the tab is not
-  muted. Voices differ between browsers and operating systems.
+  muted. Voices differ between browsers and operating systems; Chrome and
+  Edge include good US English voices.
+- **Record does nothing or says the microphone is blocked**: allow the
+  microphone for the page (the icon in the address bar) and try again.
+  Recording needs a page served over `https://`, `http://localhost` or opened
+  as a file.
 - **My words disappeared**: they live in one browser's `localStorage`. A
   different browser, a private window or clearing site data starts from the
   sample deck again. Restore from an exported `vocabulary.json`.

@@ -9,6 +9,8 @@ module.exports = defineConfig({
   reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'list',
   use: {
     trace: 'retain-on-failure',
+    // A fake microphone, allowed without a prompt, for the Speaking tab's recorder.
+    launchOptions: { args: ['--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream'] },
   },
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },

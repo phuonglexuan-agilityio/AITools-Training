@@ -199,7 +199,7 @@ input[type="checkbox"] { padding: 0; width: 16px; height: 16px; accent-color: va
 .stat { font-weight: 600; font-variant-numeric: tabular-nums; color: var(--text); white-space: nowrap; }
 .stat-ok { color: var(--ok); }
 .bar { flex: 1; height: 8px; background: var(--border); border-radius: 999px; overflow: hidden; }
-#bar-fill { height: 100%; width: 0; background: var(--ok-strong); border-radius: 999px; transition: width 0.25s; }
+#bar-fill, .bar-fill { height: 100%; width: 0; background: var(--ok-strong); border-radius: 999px; transition: width 0.25s; }
 
 /* ---------- Flashcard ---------- */
 .card-wrap { position: relative; perspective: 1400px; margin: 16px 0 20px; }
@@ -417,6 +417,36 @@ mark.focus { background: var(--hl-bg); color: var(--hl-text); border-radius: 4px
 .feedback .speak { margin-left: 6px; }
 .quiz-next { display: flex; justify-content: flex-end; }
 
+/* ---------- Speaking ---------- */
+.phrase-card { position: relative; margin: 16px 0 8px; padding: 52px 28px 24px; text-align: center; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow); }
+.phrase-card.confident { border-color: var(--ok); box-shadow: var(--shadow), 0 0 0 1px var(--ok) inset; }
+.phrase-card.confident::after { content: "✓ Confident"; position: absolute; top: 16px; right: 18px; padding: 2px 10px; border-radius: 999px; background: var(--ok-soft); color: var(--ok); font-size: 0.75rem; font-weight: 600; }
+.phrase-text { margin: 0; font-size: 1.7rem; line-height: 1.6; font-weight: 400; letter-spacing: -0.01em; }
+.phrase-text .stress { font-weight: 800; color: var(--primary); }
+.phrase-text .pause, .legend .pause { display: inline-block; width: 2px; height: 1.1em; margin: 0 0.45em; vertical-align: -0.15em; background: var(--border-strong); border-radius: 2px; }
+.tone { font-weight: 700; margin-left: 0.15em; }
+.tone.rise { color: var(--ok); }
+.tone.fall { color: var(--warn); }
+.phrase-card .vi-text { margin-top: 14px; font-size: 1rem; }
+.chunk { margin: 18px 0 0; padding-top: 14px; border-top: 1px solid var(--border); font-weight: 600; }
+.chunk-label { display: inline-block; margin-right: 6px; padding: 1px 8px; border-radius: 999px; background: var(--primary-soft); color: var(--primary); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; vertical-align: 2px; }
+.tip-text { margin: 10px auto 0; max-width: 600px; padding: 8px 12px; border-radius: 10px; background: var(--hl-bg); color: var(--hl-text); font-size: 0.9rem; }
+.tip-text:empty { display: none; }
+.legend { margin: 0 0 16px; text-align: center; font-size: 0.8rem; color: var(--muted); }
+.legend .stress { color: var(--primary); }
+.speak-steps { display: grid; grid-template-columns: 1fr 1fr 1.5fr; gap: 10px; }
+.step { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 8px; padding: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+.step .btn { flex: 1 1 auto; }
+.step-label { flex-basis: 100%; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.btn.recording { background: var(--danger); border-color: var(--danger); color: var(--primary-text); animation: pulse 1.2s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: 0.7; } }
+.sp-status { min-height: 1.5em; margin: 12px 0; text-align: center; font-size: 0.9rem; color: var(--muted); }
+.sp-status.turn { color: var(--primary); font-weight: 700; }
+.sp-status.rec { color: var(--danger); font-weight: 600; }
+.sp-status.done { color: var(--ok); }
+.sp-status.error { color: var(--danger); }
+#sp-mark-practise, #sp-mark-confident { white-space: nowrap; }
+
 /* ---------- Confirm box ---------- */
 .confirm-overlay { position: fixed; inset: 0; z-index: 10; display: flex; align-items: center; justify-content: center; padding: 16px; background: var(--overlay); }
 .confirm-overlay[hidden] { display: none; }
@@ -443,4 +473,10 @@ mark.focus { background: var(--hl-bg); color: var(--hl-text); border-radius: 4px
   .main-text { font-size: 1.9rem; }
   .face.back .main-text { font-size: 1.35rem; }
   .word-item { flex-direction: column; gap: 10px; }
+  .phrase-card { padding: 48px 16px 20px; }
+  .phrase-text { font-size: 1.3rem; }
+  .speak-steps { grid-template-columns: 1fr; }
+  .tab { padding: 8px 2px; font-size: 0.82rem; white-space: normal; }
+  #sp-mark-practise { order: -2; }
+  #sp-mark-confident { order: -1; }
 }

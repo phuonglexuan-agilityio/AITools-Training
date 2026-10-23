@@ -75,7 +75,8 @@
     return span;
   }
 
-  const { canSpeak, speak } = window.speech;
+  const { canSpeak } = window.speech;
+  const speak = (text) => window.speech.speak(text, { lang: 'en-GB' });
 
   function speakBtn(text, label = '🔊') {
     const b = make('button', 'btn small ghost speak', label);
