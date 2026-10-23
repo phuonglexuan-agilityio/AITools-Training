@@ -12,6 +12,7 @@
       <h1 class="brand"><span class="brand-mark" aria-hidden="true">Aa</span>Vocab Flashcards</h1>
       <nav class="tabs" role="tablist">
         <button class="tab active" data-view="study" role="tab">Study</button>
+        <button class="tab" data-view="speak" role="tab">Speaking</button>
         <button class="tab" data-view="ipa" role="tab">IPA practice</button>
         <button class="tab" data-view="manage" role="tab">Manage words</button>
       </nav>
@@ -77,6 +78,74 @@
         <button id="next" class="btn ghost" title="Next (→)">Next →</button>
       </div>
       <p class="shortcuts"><kbd>Space</kbd> flip · <kbd>←</kbd> <kbd>→</kbd> navigate · <kbd>1</kbd> still learning · <kbd>2</kbd> known · <kbd>S</kbd> hear the word</p>
+    </section>
+
+    <!-- Speaking view: work phrases with stress, intonation, shadowing and recording -->
+    <section id="view-speak" class="view">
+      <div class="toolbar panel">
+        <label class="field">Situation
+          <select id="sp-sit">
+            <option value="all">All situations</option>
+          </select>
+        </label>
+        <label class="field">Show
+          <select id="sp-filter">
+            <option value="all">All phrases</option>
+            <option value="practising">Need practice</option>
+            <option value="confident">Confident</option>
+          </select>
+        </label>
+        <label class="check"><input type="checkbox" id="sp-show-vi" checked> Vietnamese</label>
+        <button id="sp-shuffle" class="btn ghost push-end">Shuffle</button>
+      </div>
+
+      <div class="progress">
+        <span id="sp-position" class="stat">0 / 0</span>
+        <div class="bar" aria-hidden="true"><div id="sp-bar-fill" class="bar-fill"></div></div>
+        <span id="sp-confident-count" class="stat stat-ok">0 confident</span>
+      </div>
+
+      <div id="sp-empty" class="empty" hidden>No phrases here. Change the situation or the filter.</div>
+
+      <div id="sp-body">
+        <article id="sp-card" class="phrase-card">
+          <span id="sp-sit-label" class="face-label"></span>
+          <p id="sp-text" class="phrase-text"></p>
+          <p id="sp-vi" class="vi-text" lang="vi"></p>
+          <p class="chunk"><span class="chunk-label">Key phrase</span> <span id="sp-chunk"></span></p>
+          <p id="sp-tip" class="tip-text"></p>
+        </article>
+        <p class="legend"><strong class="stress">bold</strong> = stressed · <span class="pause" aria-hidden="true"></span> = short pause · <span class="tone rise">↗</span> voice goes up · <span class="tone fall">↘</span> voice goes down</p>
+
+        <div class="speak-steps">
+          <div class="step">
+            <span class="step-label">1 · Listen</span>
+            <button id="sp-slow" class="btn" title="Slow (D)">🐢 Slow</button>
+            <button id="sp-normal" class="btn" title="Normal speed (S)">🔊 Normal</button>
+          </div>
+          <div class="step">
+            <span class="step-label">2 · Shadow</span>
+            <button id="sp-shadow" class="btn" title="Hear it 3 times and repeat after each (H)">🔁 Repeat after it ×3</button>
+          </div>
+          <div class="step">
+            <span class="step-label">3 · Record</span>
+            <button id="sp-record" class="btn primary" title="Record yourself (R)">🎙 Record</button>
+            <button id="sp-play-mine" class="btn" title="Play my recording (P)" disabled>▶ My voice</button>
+            <button id="sp-compare" class="btn" title="Model, then my recording (C)" disabled>⇄ Compare</button>
+          </div>
+        </div>
+        <p id="sp-status" class="sp-status" aria-live="polite"></p>
+
+        <div class="controls">
+          <button id="sp-prev" class="btn ghost" title="Previous (←)">← Prev</button>
+          <button id="sp-mark-practise" class="btn warn" title="Need practice (1)">Need practice</button>
+          <button id="sp-mark-confident" class="btn ok" title="Confident (2)">Confident</button>
+          <button id="sp-next" class="btn ghost" title="Next (→)">Next →</button>
+        </div>
+        <p class="shortcuts"><kbd>S</kbd> listen · <kbd>D</kbd> slow · <kbd>H</kbd> shadow · <kbd>R</kbd> record / stop · <kbd>P</kbd> my voice · <kbd>C</kbd> compare · <kbd>←</kbd> <kbd>→</kbd> navigate · <kbd>1</kbd> need practice · <kbd>2</kbd> confident</p>
+      </div>
+
+      <p class="note">American English. Recordings stay in this browser tab and are deleted when you reload or close it.</p>
     </section>
 
     <!-- IPA practice view (Phase 1) -->
@@ -202,5 +271,7 @@
   <script src="app.js"></script>
   <script src="ipa-data.js"></script>
   <script src="ipa.js"></script>
+  <script src="phrases-data.js"></script>
+  <script src="speaking.js"></script>
 </body>
 </html>
