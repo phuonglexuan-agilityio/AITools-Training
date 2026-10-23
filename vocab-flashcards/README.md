@@ -41,7 +41,8 @@ The app has no runtime dependencies. `npm install` is only needed to run the
 tests (see [Tests](#tests)).
 
 A sample deck of six words loads the first time you open the app, so you can
-try it straight away.
+try it straight away. Press **+ Add 500 BA, software & AI words** in Study to
+add the built-in work word list.
 
 ## Features
 
@@ -51,6 +52,14 @@ try it straight away.
   meaning; the back shows the rest. A progress bar tracks known words.
   The word's face shows its IPA pronunciation and a 🔊 button (or S) that
   speaks the word; the button hides while the word is still the answer.
+- **Built-in work word list** — 500 words for a Business Analyst on software
+  and AI projects, in seven topics: Business analysis, Agile & projects,
+  Software & development, Testing & quality, Data & cloud, AI & machine
+  learning, and Claude & AI assistants. Each word has an American (General
+  American) IPA transcription, part of speech, English meaning, Vietnamese
+  meaning and a work example. One click in Study adds it to your deck (words
+  you already have are skipped), and the **Topic** filter studies one topic at
+  a time; your own words show under *My words*.
 - **IPA practice (Phase 1)** — learn the 44 sounds of British English (RP)
   through 132 example words (3 per sound):
   - *Sound chart* — every IPA symbol grouped into short vowels, long vowels,
@@ -96,6 +105,10 @@ The app has three tabs.
 4. Press **Still learning** or **I know it**. The card moves on and the
    progress bar updates.
 5. **Shuffle** randomises the order.
+6. **+ Add 500 BA, software & AI words** adds the built-in list. After that,
+   use **Topic** to study one topic (for example *Business analysis*). The
+   button disappears once every word of the list is in your deck, and comes
+   back after **Reset**.
 
 ### IPA practice
 
@@ -164,6 +177,10 @@ Only `word` and `meaning` are required.
 ]
 ```
 
+Words from the built-in list also carry a `topic` (for example
+`"topic": "Business analysis"`), which drives the Study tab's **Topic**
+filter. Imported words keep their topic.
+
 **CSV / TSV without a header**: one word per line as
 `word,meaning[,example]`.
 
@@ -207,6 +224,7 @@ there. Clearing site data for the page also clears your deck.
 vocab-flashcards/
 ├── index.html            # Page markup: header tabs, the three views, toast and confirm box
 ├── styles.css            # All styling, including responsive layout and dark mode
+├── wordlists-data.js     # Built-in 500-word BA, software & AI list (American IPA)
 ├── app.js                # Study + Manage words: deck state, storage, import/export
 ├── ipa-data.js           # IPA deck: 44 sounds, groups, tips and example words
 ├── ipa.js                # IPA practice view: sound chart, flashcards, quiz, audio
@@ -218,19 +236,21 @@ vocab-flashcards/
 ├── .gitignore
 └── tests/
     ├── unit/
-    │   └── ipa-data.test.js       # Checks the IPA deck data
+    │   ├── ipa-data.test.js       # Checks the IPA deck data
+    │   └── wordlists-data.test.js # Checks the built-in word list
     └── e2e/
         ├── fixtures.js            # Opens the app and fails on page errors or native dialogs
         ├── study.spec.js          # Study tab
         ├── manage.spec.js         # Manage words tab
         ├── ipa.spec.js            # IPA practice tab
+        ├── wordlist.spec.js       # Built-in word list and Topic filter
         └── confirm-dialog.spec.js # In-page confirm box
 ```
 
 ## How the code fits together
 
 - Each script is a self-contained IIFE loaded with a plain `<script>` tag in
-  `index.html`, in this order: `confirm-dialog.js`, `speech.js`, `app.js`,
+  `index.html`, in this order: `confirm-dialog.js`, `speech.js`, `wordlists-data.js`, `app.js`,
   `ipa-data.js`, `ipa.js`. There are no modules or bundler.
 - `confirm-dialog.js` exposes `window.askConfirm(message, okLabel)`, which the
   other scripts `await`; it resolves `true` for OK and `false` for Cancel, Escape or a click
@@ -238,8 +258,12 @@ vocab-flashcards/
 - `speech.js` exposes `window.speech = { canSpeak, speak(text) }`, which uses
   `speechSynthesis` with a British English voice when one is installed.
 - `app.js` owns the word deck. Every word is normalised to
-  `{ id, word, sub, meaning, example, vi, known }` and the whole list is saved
-  to `localStorage` after each change.
+  `{ id, word, sub, meaning, example, vi, known }` (plus `topic` for words
+  from the built-in list) and the whole list is saved to `localStorage` after
+  each change.
+- `wordlists-data.js` defines `window.WORD_LIST`: topics, each with words
+  written as `[word, IPA, part of speech, English meaning, Vietnamese, example]`.
+  `app.js` turns them into deck words with `sub` = `/IPA/ (pos)`.
 - `ipa-data.js` defines `window.IPA_GROUPS` and `window.IPA_SOUNDS`. Each
   sound has a symbol, group, tip, a list of commonly confused sounds (`alt`)
   and three example words written as `[word, transcription, Vietnamese]`. The
@@ -265,6 +289,9 @@ npm test                          # unit + browser tests
   Vietnamese meaning, every transcription marks its own focus sound, only IPA
   characters (ɡ not g), and every confusable swap gives a distinct wrong
   answer.
+  It also checks the built-in word list: 500 unique words, every field filled
+  in, a known part of speech, and American IPA only (no British vowels such as
+  ɒ or əʊ, ɡ not g, a stress mark on every word of more than one syllable).
 - `npm run test:e2e` — Playwright in Chromium (`tests/e2e/`), one spec per tab:
   study (flip, navigation, known/learning filters, shuffle, persistence),
   manage words (add, edit, delete, search, duplicate check, import CSV/TSV/JSON,
