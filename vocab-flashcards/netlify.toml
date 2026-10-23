@@ -1,0 +1,7 @@
+# Netlify: serve the vocab flashcard app as a static site (no build step).
+# Set the Netlify site's Base directory to "vocab-flashcards" so this file is used.
+# It lives here, not at the repo root, so it doesn't affect other Netlify sites
+# built from this repo (e.g. giant-moon).
+[build]
+  publish = "."
+  command = ""

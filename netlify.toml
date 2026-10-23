@@ -1,4 +1,0 @@
-# Netlify: serve the vocab flashcard app as a static site (no build step).
-[build]
-  publish = "vocab-flashcards"
-  command = ""
