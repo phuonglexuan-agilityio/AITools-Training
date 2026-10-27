@@ -1,33 +1,33 @@
 # Vocab Flashcards: user stories
 
 Stories for the mentee programme. Each one is also a GitHub issue on the
-Project board. Requirements, constraints and the Definition of Done are in
+Project board (epics are #14 to #20, stories #21 to #39). Requirements, constraints and the Definition of Done are in
 [SPEC.md](SPEC.md); every story must meet that Definition of Done as well as
 its own acceptance criteria.
 
 **Sizes:** S = up to 1 day, M = 2 to 3 days, L = 4 or more days for a mentee.
 
-| ID | Story | Epic | Size | Starter |
-| --- | --- | --- | --- | --- |
-| US-00 | Set up the project and open a first PR | Onboarding | S | ✓ |
-| US-01 | Keyboard shortcuts help | Study & memory | S | ✓ |
-| US-02 | Light / dark / system theme choice | Look, feel & delivery | S | ✓ |
-| US-03 | Spaced repetition ("Due today") | Study & memory | L | |
-| US-04 | Study session summary | Study & memory | S | ✓ |
-| US-05 | Choose voice and speed | Pronunciation & audio | M | |
-| US-06 | IPA trainer in General American | Pronunciation & audio | L | |
-| US-07 | Listen-and-type quiz | Practice & quizzes | M | |
-| US-08 | Meaning quiz | Practice & quizzes | M | |
-| US-09 | Fill-in-the-blank collocation quiz | Practice & quizzes | M | |
-| US-10 | Say it: pronunciation check with the microphone | Pronunciation & audio | L | |
-| US-11 | Daily goal and streak | Progress & motivation | M | |
-| US-12 | Progress page | Progress & motivation | M | |
-| US-13 | Tags for my own words | Word management & data | M | |
-| US-14 | Bulk actions in Manage words | Word management & data | M | |
-| US-15 | Back up and restore everything | Word management & data | M | |
-| US-16 | Accessibility pass with automated check | Look, feel & delivery | M | |
-| US-17 | Install and use offline | Look, feel & delivery | M | |
-| US-18 | Export deck as CSV | Word management & data | S | ✓ |
+| ID | Issue | Story | Epic | Size | Starter |
+| --- | --- | --- | --- | --- | --- |
+| US-00 | #21 | Set up the project and open a first PR | Onboarding | S | ✓ |
+| US-01 | #22 | Keyboard shortcuts help | Study & memory | S | ✓ |
+| US-02 | #23 | Light / dark / system theme choice | Look, feel & delivery | S | ✓ |
+| US-03 | #24 | Spaced repetition ("Due today") | Study & memory | L | |
+| US-04 | #25 | Study session summary | Study & memory | S | ✓ |
+| US-05 | #26 | Choose voice and speed | Pronunciation & audio | M | |
+| US-06 | #27 | IPA trainer in General American | Pronunciation & audio | L | |
+| US-07 | #28 | Listen-and-type quiz | Practice & quizzes | M | |
+| US-08 | #29 | Meaning quiz | Practice & quizzes | M | |
+| US-09 | #30 | Fill-in-the-blank collocation quiz | Practice & quizzes | M | |
+| US-10 | #31 | Say it: pronunciation check with the microphone | Pronunciation & audio | L | |
+| US-11 | #32 | Daily goal and streak | Progress & motivation | M | |
+| US-12 | #33 | Progress page | Progress & motivation | M | |
+| US-13 | #34 | Tags for my own words | Word management & data | M | |
+| US-14 | #35 | Bulk actions in Manage words | Word management & data | M | |
+| US-15 | #36 | Back up and restore everything | Word management & data | M | |
+| US-16 | #37 | Accessibility pass with automated check | Look, feel & delivery | M | |
+| US-17 | #38 | Install and use offline | Look, feel & delivery | M | |
+| US-18 | #39 | Export deck as CSV | Word management & data | S | ✓ |
 
 ---
 

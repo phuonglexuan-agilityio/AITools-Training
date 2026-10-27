@@ -1,7 +1,7 @@
 ---
 name: User story
 about: A feature for the Vocab Flashcards app, written as a user story
-labels: user-story
+labels: enhancement
 ---
 
 **As a** <persona>, **I want** <goal>, **so that** <reason>.

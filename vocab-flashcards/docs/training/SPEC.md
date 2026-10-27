@@ -181,6 +181,24 @@ Each requirement maps to one or more user stories (US-xx).
 | 3 (stretch) | US-03, US-06, US-09, US-12, US-14, US-16 | Algorithms, data work, quality |
 | 4 (advanced) | US-10, US-17 | Browser APIs with patchy support |
 
+### Setting up the Project board (mentor, once)
+
+1. On GitHub, open your profile → **Projects** → **New project** → **Board**,
+   and name it, for example, *Vocab Flashcards mentoring*.
+2. In the project, open **⋯ → Workflows** and turn on *Auto-add to project*
+   for the repo `AITools-Training` with the filter `is:issue is:open`. That
+   adds issues #14 to #39 and every new one. (Or paste
+   `repo:phuonglexuan-agilityio/AITools-Training is:issue` into the bottom
+   row's search box and select all.)
+3. Columns: **Todo**, **In progress**, **In review**, **Done**. The default
+   workflows move items to Done when an issue closes or a PR merges.
+4. Add fields: **Size** (single select S / M / L), **Sprint** (iteration) and
+   keep **Parent issue** visible to group by epic.
+5. Invite mentees: repo **Settings → Collaborators → Add people** (so they can
+   be assigned and push branches), then in the project **⋯ → Settings →
+   Manage access** give them *Write*.
+6. Assign each mentee their own US-00 first, then one starter story.
+
 ## 10. Out of scope
 
 - User accounts, sign-in, or syncing between devices through a server.
