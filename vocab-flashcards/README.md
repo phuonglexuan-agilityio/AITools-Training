@@ -318,6 +318,10 @@ run (kept for 7 days).
 
 ## Contributing
 
+Mentees: start with the [training spec](docs/training/SPEC.md) and the
+[user stories](docs/training/USER-STORIES.md). Every story is an issue on the
+GitHub Project board.
+
 1. Create a branch from `main`.
 2. Make your change. Keep the app dependency-free: plain HTML, CSS and
    JavaScript that runs by opening `index.html`, with no build step.
