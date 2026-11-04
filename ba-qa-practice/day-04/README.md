@@ -10,13 +10,13 @@ task that ends in a decision doc.
 ## Checklist
 
 - [x] Course: Claude 101 deep pass (projects, artifacts, connected tools): finished, see the Day 01 badge
-- [ ] Create one Project per training client and move the BA/QA work into it (yours to do: [project-setup.md](project-setup.md))
+- [x] Create one Project per training client and move the BA/QA work into it (confirmed by you; see [project-setup.md](project-setup.md))
 - [x] Summarise the messy feature request into a structured brief ([feature-brief.md](feature-brief.md))
 - [x] Publish the brief as an artifact: <https://claude.ai/artifact/CLn78b3J4bGWmHG9Sn5WVM> (private to your account until you share it)
-- [ ] Course: Introduction to Claude Cowork (yours to do)
-- [ ] Run the research task in Cowork (yours to do; the exact prompt is in [project-setup.md](project-setup.md))
+- [x] Course: Introduction to Claude Cowork (confirmed by you)
+- [x] Run the research task in Cowork (confirmed by you; the prompt is in [project-setup.md](project-setup.md))
 - [x] Research and decision doc **draft** with web search, 4 sources opened ([decision-doc.md](decision-doc.md)); not run in Cowork
-- [ ] Edit the decision doc into your own words
+- [x] Edit the decision doc into your own words (confirmed by you; your version is not in this repo)
 
 ## Files
 
@@ -28,6 +28,9 @@ task that ends in a decision doc.
 
 ## Honest status
 
+- On 2026-11-04 you told Claude you completed the four items above (Project, Cowork course, Cowork task,
+  rewrite). Claude did not see them, so they are ticked on your word. No screenshots or links are
+  stored for them yet; add them to an `evidence/` folder if you want proof.
 - Claude created the brief, the artifact and the research draft. Claude cannot create your
   Project or run Cowork from here.
 - In the decision doc, the effort column is a **guess**, and the retention numbers found online are

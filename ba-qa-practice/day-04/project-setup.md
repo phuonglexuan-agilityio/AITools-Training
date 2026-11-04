@@ -55,9 +55,9 @@ vendor-reported claims as such.
 3. Compare its answer with [decision-doc.md](decision-doc.md), then rewrite the doc in your own
    words.
 
-## Checklist
+## Checklist (confirmed by you on 2026-11-04; Claude did not see these)
 
-- [ ] Project "Sunrise Coffee Co." created with the instructions above
-- [ ] Sunrise Coffee chats moved into it
-- [ ] Cowork research task run and compared with `decision-doc.md`
-- [ ] Decision doc rewritten in your own words
+- [x] Project "Sunrise Coffee Co." created with the instructions above
+- [x] Sunrise Coffee chats moved into it
+- [x] Cowork research task run and compared with `decision-doc.md`
+- [x] Decision doc rewritten in your own words
