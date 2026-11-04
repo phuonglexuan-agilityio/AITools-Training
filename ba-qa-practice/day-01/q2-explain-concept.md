@@ -34,5 +34,5 @@ If the team cannot write a check like this, the request is not clear enough yet.
 
 ## To edit by hand
 
-- [ ] Add one line in your own words. Suggestion: acceptance criteria are what QA turns into
+- [x] Add one line in your own words. Suggestion: acceptance criteria are what QA turns into
   test cases later, so BA and QA should read them at the same time.

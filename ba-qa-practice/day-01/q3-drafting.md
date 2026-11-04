@@ -32,5 +32,5 @@ Best regards,
 
 ## To edit by hand
 
-- [ ] Fill in the client name and your name, and adjust the opening line to your style.
+- [x] Fill in the client name and your name, and adjust the opening line to your style.
 - This email was not sent: it is a practice draft for a fictional client.

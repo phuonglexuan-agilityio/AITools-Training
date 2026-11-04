@@ -39,6 +39,6 @@ my phone. Not sure about desktop. Then list what information is missing.
 
 ## To edit by hand (Day 1 habit: Claude writes the first draft, you write the last)
 
-- [ ] Keep the three bullets and the question list, or reword them in your own style.
-- [ ] Keep the third bullet marked as a guess: the report gives no evidence of the cause.
-- [ ] Add your own note on what surprised you.
+- [x] Keep the three bullets and the question list, or reword them in your own style.
+- [x] Keep the third bullet marked as a guess: the report gives no evidence of the cause.
+- [x] Add your own note on what surprised you.
