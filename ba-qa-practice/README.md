@@ -14,7 +14,7 @@ web app for ordering beans and a monthly subscription). No real client data is u
 | [02](day-02/) | Ticket analysis, reproduce and understand | In progress |
 | [03](day-03/) | Fix, review, merge (Checkpoint 1) | In progress |
 | [04](day-04/) | Projects, artifacts and Cowork | Done |
-| 05 | Ticket planning | Not started |
+| [05](day-05/) | Ticket planning | In progress |
 | 06 | Deep work, test design (Checkpoint 2) | Not started |
 | 07 | QA in the Code tab | Not started |
 | 08 | Browser automation | Not started |
