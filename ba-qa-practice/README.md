@@ -11,13 +11,13 @@ web app for ordering beans and a monthly subscription). No real client data is u
 | Day | Topic | Status |
 | --- | --- | --- |
 | [01](day-01/) | Mental model + Claude basics | Done |
-| [02](day-02/) | Ticket analysis, reproduce and understand | In progress |
-| [03](day-03/) | Fix, review, merge (Checkpoint 1) | In progress |
+| [02](day-02/) | Ticket analysis, reproduce and understand | Done (marked on your instruction, open items listed in the day README) |
+| [03](day-03/) | Fix, review, merge (Checkpoint 1) | Done (marked on your instruction, open items listed in the day README) |
 | [04](day-04/) | Projects, artifacts and Cowork | Done |
-| [05](day-05/) | Ticket planning | In progress |
-| 06 | Deep work, test design (Checkpoint 2) | Not started |
-| 07 | QA in the Code tab | Not started |
-| 08 | Browser automation | Not started |
+| [05](day-05/) | Ticket planning | Done (marked on your instruction, open items listed in the day README) |
+| [06](day-06/) | Deep work, test design (Checkpoint 2) | Done (human review pending) |
+| [07](day-07/) | QA in the Code tab | Done |
+| [08](day-08/) | Browser automation | Done |
 | 09 | Author a suite | Not started |
 | 10 | CI and triage | Not started |
 | 11 | Regression day (Checkpoint 3) | Not started |

@@ -1,0 +1,5 @@
+  1 failed
+    [chromium] › tests/e2e/manage.spec.js:105:3 › Manage words tab › deletes a word after confirming 
+  21 passed (19.1s)
+
+  22 passed (12.9s)
