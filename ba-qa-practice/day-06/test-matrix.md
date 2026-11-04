@@ -42,7 +42,7 @@ the intended rule; there is no written ticket for import/edit duplicates, which 
 | IMP-1 | Import a file containing a word already in the deck | Edge | Skipped, toast says "skipped 1 duplicate(s)" | P1 | **Pass** |
 | IMP-2 | Import a file where the same word appears twice | Edge | One copy kept | P1 | **Fail: both imported (BUG-1)** |
 | IMP-3 | Import an unreadable file | Negative | Error message, deck unchanged | P2 | Pass (existing suite) |
-| IMP-4 | CSV line whose meaning contains a comma | Boundary | Meaning kept whole, or column format documented | P2 | **Unclear**: split into two fields; no written CSV format to judge against (see "Open" below) |
+| IMP-4 | CSV line whose meaning contains a comma | Boundary | Meaning kept whole, or column format documented | P2 | Looked unclear on Day 6; **resolved on Day 14**: the CSV format is documented in a code comment in `app.js` (see day-14) |
 | EDT-1 | Edit a word to a new spelling | Happy path | Deck size unchanged | P1 | **Pass** |
 | EDT-2 | Edit a word so it equals another word | Edge | App asks first, like Add does | P1 | **Fail: silently creates a duplicate (BUG-2)** |
 | EDT-3 | Edit meaning only, keep the word | Happy path | Saved, no duplicate prompt | P1 | Pass (existing suite) |
