@@ -12,7 +12,7 @@ web app for ordering beans and a monthly subscription). No real client data is u
 | --- | --- | --- |
 | [01](day-01/) | Mental model + Claude basics | Done |
 | [02](day-02/) | Ticket analysis, reproduce and understand | In progress |
-| 03 | Fix, review, merge (Checkpoint 1) | Not started |
+| [03](day-03/) | Fix, review, merge (Checkpoint 1) | In progress |
 | 04 | Projects, artifacts and Cowork | Not started |
 | 05 | Ticket planning | Not started |
 | 06 | Deep work, test design (Checkpoint 2) | Not started |
