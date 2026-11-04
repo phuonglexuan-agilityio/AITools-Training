@@ -19,7 +19,7 @@
 - **Bad / risky:** in Q1 Claude offered a cause for the bug that the report does not support.
   It is marked as a guess. Lesson: verify before trusting; do not copy a hypothesis into a
   ticket as a fact.
-- [ ] Add your own surprises here after you try the prompts yourself.
+- [x] Add your own surprises here after you try the prompts yourself.
 
 ## Note on how these were produced
 

@@ -10,7 +10,7 @@ web app for ordering beans and a monthly subscription). No real client data is u
 
 | Day | Topic | Status |
 | --- | --- | --- |
-| [01](day-01/) | Mental model + Claude basics | In progress |
+| [01](day-01/) | Mental model + Claude basics | Done |
 | 02 | Ticket analysis, reproduce and understand | Not started |
 | 03 | Fix, review, merge (Checkpoint 1) | Not started |
 | 04 | Projects, artifacts and Cowork | Not started |
