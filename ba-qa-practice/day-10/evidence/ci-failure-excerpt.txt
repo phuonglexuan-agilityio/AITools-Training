@@ -1,0 +1,7 @@
+  ✘   8 [chromium] › tests/e2e/import-and-edit-duplicates.spec.js:30:3 › Import and edit: duplicate words › IMP-2 import keeps one copy when the same word appears twice in the file [BUG-1] (5.3s)
+  ✘  10 [chromium] › tests/e2e/import-and-edit-duplicates.spec.js:46:3 › Import and edit: duplicate words › EDT-2 editing a word into an existing word asks first [BUG-2] (6.3s)
+    Locator:  locator('#confirm-overlay')
+    Expected: visible
+    Received: hidden
+  1 failed
+  69 passed (25.3s)

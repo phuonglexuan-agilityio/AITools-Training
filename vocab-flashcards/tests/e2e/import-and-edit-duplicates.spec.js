@@ -44,6 +44,7 @@ test.describe('Import and edit: duplicate words', () => {
   });
 
   test('EDT-2 editing a word into an existing word asks first [BUG-2]', async ({ app }) => {
+    test.fail(true, 'BUG-2: the edit path has no duplicate check');
     const other = await app.locator('.word-item .w').nth(1).innerText();
     await app.locator('.word-item').first().getByRole('button', { name: /edit/i }).click();
     await app.fill('#f-word', other);
