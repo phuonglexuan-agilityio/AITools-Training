@@ -18,9 +18,9 @@ web app for ordering beans and a monthly subscription). No real client data is u
 | [06](day-06/) | Deep work, test design (Checkpoint 2) | Done (human review pending) |
 | [07](day-07/) | QA in the Code tab | Done |
 | [08](day-08/) | Browser automation | Done |
-| 09 | Author a suite | Not started |
-| 10 | CI and triage | Not started |
-| 11 | Regression day (Checkpoint 3) | Not started |
+| [09](day-09/) | Author a suite | Done |
+| [10](day-10/) | CI and triage | Done (failure was seeded) |
+| [11](day-11/) | Regression day (Checkpoint 3) | Done (merge and developer test pending) |
 | 12 | Capstone: kickoff and planning | Not started |
 | 13 | Capstone: build | Not started |
 | 14 | Capstone: test and harden | Not started |
