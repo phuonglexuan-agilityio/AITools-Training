@@ -33,7 +33,7 @@ run for that commit is recorded below.
 
 ## Result of the fix
 
-See the line added at the bottom of this file once the next run finishes.
+[Run 41803755933](https://github.com/phuonglexuan-agilityio/AITools-Training/actions/runs/41803755933): **success** after restoring the marker.
 
 ## Warnings seen in the same run (not failures)
 
