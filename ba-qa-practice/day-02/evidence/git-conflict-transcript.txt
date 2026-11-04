@@ -1,0 +1,58 @@
+Git block (Day 02): pull --rebase, reading git log / git diff, resolving merge conflict #1
+Where: a throwaway local repo (Alice = me, Bob = partner) created by Claude in a sandbox.
+Not the AITools-Training repo. File used: ticket.md with a made-up skip-month ticket.
+------------------------------------------------------------------------------------
+
+$ git log --oneline --graph --all   # Alice, before pulling (her commit on top of the first one)
+* eda8c15 Set deadline to ASAP
+* ce182e9 Add skip-month ticket
+
+(Bob had already pushed "Set deadline to 1 December" to the remote.)
+
+$ git pull --rebase origin main
+   ce182e9..110e39e  main       -> origin/main
+   Rebasing (1/1)Auto-merging ticket.md
+   CONFLICT (content): Merge conflict in ticket.md
+   error: could not apply eda8c15... Set deadline to ASAP
+
+$ git status -sb
+## HEAD (no branch)
+UU ticket.md
+
+$ cat ticket.md   # conflicted file
+# Skip month ticket
+<<<<<<< HEAD
+Deadline: 1 December (holiday sale)
+=======
+Deadline: ASAP
+>>>>>>> eda8c15 (Set deadline to ASAP)
+Who can skip: all subscribers
+
+$ git add ticket.md && GIT_EDITOR=true git rebase --continue
+[detached HEAD 01be5e7] Set deadline to ASAP
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Successfully rebased and updated refs/heads/main.
+
+$ git status -sb
+## main
+
+$ git log --oneline --graph
+* 01be5e7 Set deadline to ASAP
+* 110e39e Set deadline to 1 December
+* ce182e9 Add skip-month ticket
+
+$ git diff HEAD~1 HEAD
+diff --git a/ticket.md b/ticket.md
+index 107614f..f2ada78 100644
+--- a/ticket.md
++++ b/ticket.md
+@@ -1,3 +1,3 @@
+ # Skip month ticket
+-Deadline: 1 December (holiday sale)
++Deadline: 1 December (holiday sale; "ASAP" was too vague)
+ Who can skip: all subscribers
+
+$ cat ticket.md   # resolved
+# Skip month ticket
+Deadline: 1 December (holiday sale; "ASAP" was too vague)
+Who can skip: all subscribers
