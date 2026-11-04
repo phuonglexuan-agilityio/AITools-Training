@@ -1,0 +1,40 @@
+
+Running 22 tests using 1 worker
+
+  ✘   1 [chromium] › tests/e2e/manage.spec.js:20:3 › Manage words tab › lists the sample words (5.5s)
+  ✘   6 [chromium] › tests/e2e/manage.spec.js:65:3 › Manage words tab › requires a word and a meaning (5.6s)
+  ✘   7 [chromium] › tests/e2e/manage.spec.js:71:3 › Manage words tab › asks before adding a duplicate and respects "Cancel" (5.8s)
+  ✘   9 [chromium] › tests/e2e/manage.spec.js:85:3 › Manage words tab › edits a word (5.7s)
+  ✘  18 [chromium] › tests/e2e/manage.spec.js:170:3 › Manage words tab › reports a file it cannot read (5.5s)
+  ✘  20 [chromium] › tests/e2e/manage.spec.js:186:3 › Manage words tab › keeps the word when the delete is cancelled (5.5s)
+  ✘  21 [chromium] › tests/e2e/manage.spec.js:192:3 › Manage words tab › reset restores the sample deck (6.2s)
+
+
+  1) [chromium] › tests/e2e/manage.spec.js:20:3 › Manage words tab › lists the sample words ────────
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('.word-item')
+    Expected: 5
+    Received: 6
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveCount" locator('.word-item') with timeout 5000ms
+      - waiting for locator('.word-item')
+        14 × locator resolved to 6 elements
+           - unexpected value "6"
+
+
+      19 |
+      20 |   test('lists the sample words', async ({ app }) => {
+    > 21 |     await expect(app.locator('.word-item')).toHaveCount(5);
+         |                                             ^
+      22 |     await expect(item(app, 'ephemeral')).toContainText('Lasting for a very short time');
+      23 |     await expect(item(app, 'ephemeral').locator('.badge')).toHaveText('learning');
+      24 |     await expect(item(app, 'ephemeral').locator('.v')).toHaveText('phù du, chóng tàn');
+        at /tmp/claude-0/-home-claude/f4e92235-9de3-52c0-a2dd-7b6898945d46/scratchpad/brk/tests/e2e/manage.spec.js:21:45
+
+    Error Context: test-results/manage-Manage-words-tab-lists-the-sample-words-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
