@@ -21,10 +21,10 @@ web app for ordering beans and a monthly subscription). No real client data is u
 | [09](day-09/) | Author a suite | Done |
 | [10](day-10/) | CI and triage | Done (failure was seeded) |
 | [11](day-11/) | Regression day (Checkpoint 3) | Done (merge and developer test pending) |
-| 12 | Capstone: kickoff and planning | Not started |
-| 13 | Capstone: build | Not started |
-| 14 | Capstone: test and harden | Not started |
-| 15 | Capstone: review, merge, demo | Not started |
+| [12](day-12/) | Capstone: kickoff and planning | Done |
+| [13](day-13/) | Capstone: build | Done |
+| [14](day-14/) | Capstone: test and harden | Done |
+| [15](day-15/) | Capstone: review, merge, demo | Done (human review and merge pending) |
 
 ## Working rules
 

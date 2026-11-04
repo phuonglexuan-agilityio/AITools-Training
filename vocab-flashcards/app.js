@@ -361,6 +361,8 @@
     const editId = el.editId.value;
     if (editId) {
       const w = words.find((x) => x.id === editId);
+      const clash = words.some((x) => x.id !== editId && x.word.toLowerCase() === data.word.toLowerCase());
+      if (clash && !(await window.askConfirm(`"${data.word}" already exists. Save anyway?`, 'Save anyway'))) return;
       if (w) Object.assign(w, { word: data.word, sub: data.sub, meaning: data.meaning, vi: data.vi, example: data.example });
       toast('Word updated');
     } else {
@@ -422,7 +424,12 @@
           .map((w) => normalize({ ...w, id: undefined }))
           .filter((w) => w.word && w.meaning);
         const existing = new Set(words.map((w) => w.word.toLowerCase()));
-        const fresh = incoming.filter((w) => !existing.has(w.word.toLowerCase()));
+        const fresh = incoming.filter((w) => {
+          const key = w.word.toLowerCase();
+          if (existing.has(key)) return false;
+          existing.add(key); // so the same word twice in one file is added once
+          return true;
+        });
         words.push(...fresh);
         save();
         buildOrder();
